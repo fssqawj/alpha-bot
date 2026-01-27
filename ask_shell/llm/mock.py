@@ -63,18 +63,34 @@ class MockLLMClient(BaseLLMClient):
             # 根据任务类型和步骤返回响应
             response = self._get_response_for_task()
         
-        # 如果提供了流式回调，模拟流式输出（仅输出 thinking 内容）
-        if stream_callback and response.thinking:
-            self._simulate_streaming(response.thinking, stream_callback)
+        # 如果提供了流式回调，模拟流式输出 JSON
+        if stream_callback:
+            self._simulate_streaming_json(response, stream_callback)
         
         return response
     
-    def _simulate_streaming(self, text: str, callback: Callable[[str], None]):
-        """模拟流式输出效果 - 只输出思考内容文本"""
-        # 模拟打字机效果 - 逐字输出
-        for char in text:
+    def _simulate_streaming_json(self, response: LLMResponse, callback: Callable[[str], None]):
+        """模拟流式输出 JSON 格式的响应"""
+        import json
+        
+        # 将响应转换为 JSON
+        response_dict = {
+            "thinking": response.thinking or "",
+            "command": response.command or "",
+            "explanation": response.explanation or "",
+            "is_complete": response.is_complete,
+            "next_step": response.next_step or "",
+            "error_analysis": response.error_analysis or "",
+            "is_dangerous": response.is_dangerous,
+            "danger_reason": response.danger_reason or ""
+        }
+        
+        json_str = json.dumps(response_dict, ensure_ascii=False)
+        
+        # 模拟打字机效果 - 逐字符输出 JSON
+        for char in json_str:
             callback(char)
-            time.sleep(0.015)  # 每个字符延迟 15ms
+            time.sleep(0.008)  # 每个字符延迟 8ms
     
     def _get_response_for_task(self) -> LLMResponse:
         """根据任务类型获取响应"""

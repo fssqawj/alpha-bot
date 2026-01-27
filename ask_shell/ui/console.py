@@ -45,35 +45,130 @@ class ConsoleUI:
     
     @contextmanager
     def streaming_display(self):
-        """流式显示 AI 思考过程"""
+        """流式显示 AI 响应的各个字段"""
         from rich.live import Live
         from rich.panel import Panel
+        from rich.columns import Columns
+        import json
         
-        # 创建一个可变的文本容器
+        # 创建一个可变的内容容器
         class StreamingContent:
             def __init__(self):
-                self.content = ""
+                self.buffer = ""
+                self.thinking = ""
+                self.command = ""
+                self.explanation = ""
+                self.next_step = ""
+                self.error_analysis = ""
+                self.parsing = False
             
             def add_token(self, token: str):
-                """添加新的 token"""
-                self.content += token
+                """添加新的 token 并尝试解析 JSON"""
+                self.buffer += token
+                
+                # 尝试解析 JSON
+                try:
+                    # 检查是否可能是完整的 JSON（以 { 开始）
+                    if self.buffer.strip().startswith('{'):
+                        data = json.loads(self.buffer)
+                        # 成功解析，更新各字段
+                        self.thinking = data.get('thinking', '')
+                        self.command = data.get('command', '')
+                        self.explanation = data.get('explanation', '')
+                        self.next_step = data.get('next_step', '')
+                        self.error_analysis = data.get('error_analysis', '')
+                        self.parsing = True
+                except json.JSONDecodeError:
+                    # JSON 还不完整，尝试提取部分内容
+                    self._partial_parse()
             
-            def get_panel(self):
-                """获取显示面板"""
-                display_text = self.content if self.content else "思考中..."
-                return Panel(
-                    f"💭 {display_text}",
-                    title="[bold blue]💡 思考过程[/bold blue]",
-                    border_style="blue",
-                    padding=(1, 2)
-                )
+            def _partial_parse(self):
+                """部分解析 JSON，提取已经完整的字段"""
+                import re
+                
+                # 提取 thinking 字段
+                thinking_match = re.search(r'"thinking"\s*:\s*"([^"]*(?:\\.[^"]*)*)"', self.buffer)
+                if thinking_match:
+                    self.thinking = thinking_match.group(1).replace('\\"', '"').replace('\\n', '\n')
+                
+                # 提取 command 字段
+                command_match = re.search(r'"command"\s*:\s*"([^"]*(?:\\.[^"]*)*)"', self.buffer)
+                if command_match:
+                    self.command = command_match.group(1).replace('\\"', '"').replace('\\n', '\n')
+                
+                # 提取 explanation 字段
+                explanation_match = re.search(r'"explanation"\s*:\s*"([^"]*(?:\\.[^"]*)*)"', self.buffer)
+                if explanation_match:
+                    self.explanation = explanation_match.group(1).replace('\\"', '"').replace('\\n', '\n')
+                
+                # 提取 next_step 字段
+                next_step_match = re.search(r'"next_step"\s*:\s*"([^"]*(?:\\.[^"]*)*)"', self.buffer)
+                if next_step_match:
+                    self.next_step = next_step_match.group(1).replace('\\"', '"').replace('\\n', '\n')
+                
+                # 提取 error_analysis 字段
+                error_match = re.search(r'"error_analysis"\s*:\s*"([^"]*(?:\\.[^"]*)*)"', self.buffer)
+                if error_match:
+                    self.error_analysis = error_match.group(1).replace('\\"', '"').replace('\\n', '\n')
+            
+            def get_display(self):
+                """获取显示内容"""
+                from rich.console import Group
+                
+                panels = []
+                
+                # 思考过程
+                if self.thinking:
+                    panels.append(Panel(
+                        f"💭 {self.thinking}",
+                        title="[bold blue]💡 思考过程[/bold blue]",
+                        border_style="blue",
+                        padding=(1, 2)
+                    ))
+                
+                # 错误分析
+                if self.error_analysis:
+                    panels.append(Panel(
+                        f"🔍 {self.error_analysis}",
+                        title="[bold yellow]⚠️  错误分析[/bold yellow]",
+                        border_style="yellow",
+                        padding=(1, 2)
+                    ))
+                
+                # 生成的命令
+                if self.command:
+                    panels.append(Panel(
+                        Syntax(self.command, "bash", theme="monokai", line_numbers=False),
+                        title="[bold green]✨ 生成的命令[/bold green]",
+                        border_style="green",
+                        padding=(0, 1)
+                    ))
+                
+                # 说明
+                if self.explanation:
+                    panels.append(f"[dim]💬 说明: {self.explanation}[/dim]")
+                
+                # 下一步
+                if self.next_step:
+                    panels.append(f"[cyan]📋 下一步: {self.next_step}[/cyan]")
+                
+                # 如果什么都没有，显示思考中
+                if not panels:
+                    panels.append(Panel(
+                        "💭 思考中...",
+                        title="[bold blue]💡 思考过程[/bold blue]",
+                        border_style="blue",
+                        padding=(1, 2)
+                    ))
+                
+                return Group(*panels)
         
         content = StreamingContent()
         
-        with Live(content.get_panel(), console=self.console, refresh_per_second=20) as live:
+        with Live(content.get_display(), console=self.console, refresh_per_second=20) as live:
             def update_callback(token: str):
                 content.add_token(token)
-                live.update(content.get_panel())
+                live.update(content.get_display())
             
             yield update_callback
     
@@ -88,16 +183,20 @@ class ConsoleUI:
         ) as status:
             yield status
     
-    def print_response(self, response: LLMResponse, skip_thinking: bool = False):
+    def print_response(self, response: LLMResponse, skip_all: bool = False):
         """
         打印 LLM 响应
         
         Args:
             response: LLM 响应对象
-            skip_thinking: 是否跳过思考过程显示（流式显示时已经显示过了）
+            skip_all: 是否跳过所有显示（流式显示时已经全部显示过了）
         """
-        # 思考过程 - 使用更醒目的样式（如果没有流式显示，则显示）
-        if response.thinking and not skip_thinking:
+        # 如果流式显示已经展示了所有内容，直接返回
+        if skip_all:
+            return
+        
+        # 思考过程
+        if response.thinking:
             self.console.print(Panel(
                 f"💭 {response.thinking}",
                 title="[bold blue]💡 思考过程[/bold blue]",

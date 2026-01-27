@@ -72,8 +72,8 @@ class AskShell:
                 context.status = TaskStatus.FAILED
                 break
             
-            # 显示 LLM 响应（跳过思考过程，因为已经流式显示了）
-            self.ui.print_response(response, skip_thinking=True)
+            # 显示 LLM 响应（跳过所有字段，因为已经流式显示了）
+            self.ui.print_response(response, skip_all=True)
             
             # 检查任务是否完成
             if response.is_complete:
