@@ -18,9 +18,7 @@ Ask-Shell 是一个基于 AI 的智能终端助手，它能理解你的自然语
 
 ## 🎬 效果展示
 
-<p align="center">
-  <img src="ask-shell-demo.gif" alt="Demo" width="100%">
-</p>
+<video src="ask-shell-demo.mp4" controls width="100%"></video>
 
 <p align="center"><em>演示：使用 ask-shell 通过自然语言操控终端</em></p>
 
