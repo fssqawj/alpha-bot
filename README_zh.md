@@ -1,5 +1,9 @@
 # Ask-Shell
 
+<p align="center">
+  <img src="ask-shell-logo.jpg" alt="Ask-Shell Logo" width="600"/>
+</p>
+
 [![PyPI version](https://img.shields.io/pypi/v/askshell-ai.svg)](https://pypi.org/project/askshell-ai/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
