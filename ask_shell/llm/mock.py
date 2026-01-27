@@ -50,8 +50,9 @@ class MockLLMClient(BaseLLMClient):
         # 根据上一次执行结果判断
         if last_result and not last_result.success:
             self.step += 1
+            thinking_text = f"上一条命令执行失败，错误信息: {last_result.stderr}。让我尝试另一种方法。"
             response = LLMResponse(
-                thinking=f"上一条命令执行失败，错误信息: {last_result.stderr}。让我尝试另一种方法。",
+                thinking=thinking_text,
                 command="echo '演示模式: 模拟错误恢复'",
                 explanation="在真实模式下，LLM 会根据错误信息调整命令",
                 is_complete=False,
@@ -62,18 +63,18 @@ class MockLLMClient(BaseLLMClient):
             # 根据任务类型和步骤返回响应
             response = self._get_response_for_task()
         
-        # 如果提供了流式回调，模拟流式输出
+        # 如果提供了流式回调，模拟流式输出（仅输出 thinking 内容）
         if stream_callback and response.thinking:
             self._simulate_streaming(response.thinking, stream_callback)
         
         return response
     
     def _simulate_streaming(self, text: str, callback: Callable[[str], None]):
-        """模拟流式输出效果"""
-        # 模拟打字机效果
+        """模拟流式输出效果 - 只输出思考内容文本"""
+        # 模拟打字机效果 - 逐字输出
         for char in text:
             callback(char)
-            time.sleep(0.02)  # 每个字符延迟 20ms
+            time.sleep(0.015)  # 每个字符延迟 15ms
     
     def _get_response_for_task(self) -> LLMResponse:
         """根据任务类型获取响应"""
