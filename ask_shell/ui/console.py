@@ -44,6 +44,80 @@ class ConsoleUI:
             yield status
     
     @contextmanager
+    def streaming_display(self):
+        """流式显示 AI 思考过程"""
+        from rich.live import Live
+        from rich.panel import Panel
+        from rich.text import Text
+        
+        # 创建一个可变的文本容器
+        class StreamingContent:
+            def __init__(self):
+                self.buffer = ""
+                self.json_started = False
+                self.in_thinking = False
+                self.thinking_content = ""
+            
+            def add_token(self, token: str):
+                self.buffer += token
+                
+                # 尝试提取 thinking 字段内容
+                if '"thinking"' in self.buffer and not self.in_thinking:
+                    self.in_thinking = True
+                    # 找到 thinking 的值开始位置
+                    start_idx = self.buffer.find('"thinking"')
+                    colon_idx = self.buffer.find(':', start_idx)
+                    if colon_idx != -1:
+                        # 跳过冒号和可能的空格/引号
+                        content_start = colon_idx + 1
+                        while content_start < len(self.buffer) and self.buffer[content_start] in ' \n\t"':
+                            content_start += 1
+                        self.thinking_content = self.buffer[content_start:]
+                
+                if self.in_thinking and token and token not in ['"', ',', '\n', ' ']:
+                    # 检查是否遇到结束引号（后面跟着逗号或换行）
+                    if self.buffer.rstrip().endswith('"') and len(self.buffer) > 2:
+                        # 可能是 thinking 字段的结束
+                        if self.buffer.rstrip()[-2] != '\\':  # 不是转义引号
+                            # 移除结尾的引号
+                            self.thinking_content = self.thinking_content.rstrip('"').rstrip()
+                    else:
+                        self.thinking_content += token
+            
+            def get_panel(self):
+                if self.thinking_content:
+                    # 清理内容，移除可能的 JSON 语法字符
+                    clean_content = self.thinking_content.replace('\\"', '"').strip()
+                    # 如果内容过短，添加一个思考中的提示
+                    if len(clean_content) < 3:
+                        display_content = "💭 思考中..."
+                    else:
+                        display_content = f"💭 {clean_content}"
+                    
+                    return Panel(
+                        display_content,
+                        title="[bold blue]💡 思考过程[/bold blue]",
+                        border_style="blue",
+                        padding=(1, 2)
+                    )
+                else:
+                    return Panel(
+                        "💭 思考中...",
+                        title="[bold blue]💡 思考过程[/bold blue]",
+                        border_style="blue",
+                        padding=(1, 2)
+                    )
+        
+        content = StreamingContent()
+        
+        with Live(content.get_panel(), console=self.console, refresh_per_second=10) as live:
+            def update_callback(token: str):
+                content.add_token(token)
+                live.update(content.get_panel())
+            
+            yield update_callback
+    
+    @contextmanager
     def executing_animation(self, command: str):
         """显示命令执行中的动画"""
         # 截断过长的命令用于显示
@@ -54,10 +128,16 @@ class ConsoleUI:
         ) as status:
             yield status
     
-    def print_response(self, response: LLMResponse):
-        """打印 LLM 响应"""
-        # 思考过程 - 使用更醒目的样式
-        if response.thinking:
+    def print_response(self, response: LLMResponse, skip_thinking: bool = False):
+        """
+        打印 LLM 响应
+        
+        Args:
+            response: LLM 响应对象
+            skip_thinking: 是否跳过思考过程显示（流式显示时已经显示过了）
+        """
+        # 思考过程 - 使用更醒目的样式（如果没有流式显示，则显示）
+        if response.thinking and not skip_thinking:
             self.console.print(Panel(
                 f"💭 {response.thinking}",
                 title="[bold blue]💡 思考过程[/bold blue]",

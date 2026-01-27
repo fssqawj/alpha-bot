@@ -1,6 +1,7 @@
 """Mock LLM 客户端 (用于演示)"""
 
-from typing import Optional
+import time
+from typing import Optional, Callable
 
 from .base import BaseLLMClient
 from ..models.types import LLMResponse, ExecutionResult
@@ -35,7 +36,12 @@ class MockLLMClient(BaseLLMClient):
         else:
             return "generic"
     
-    def generate(self, user_input: str, last_result: Optional[ExecutionResult] = None) -> LLMResponse:
+    def generate(
+        self, 
+        user_input: str, 
+        last_result: Optional[ExecutionResult] = None,
+        stream_callback: Optional[Callable[[str], None]] = None
+    ) -> LLMResponse:
         """模拟生成命令"""
         # 首次调用时检测任务类型
         if self.task_type is None:
@@ -44,7 +50,7 @@ class MockLLMClient(BaseLLMClient):
         # 根据上一次执行结果判断
         if last_result and not last_result.success:
             self.step += 1
-            return LLMResponse(
+            response = LLMResponse(
                 thinking=f"上一条命令执行失败，错误信息: {last_result.stderr}。让我尝试另一种方法。",
                 command="echo '演示模式: 模拟错误恢复'",
                 explanation="在真实模式下，LLM 会根据错误信息调整命令",
@@ -52,9 +58,22 @@ class MockLLMClient(BaseLLMClient):
                 next_step="根据新的执行结果继续",
                 error_analysis=last_result.stderr
             )
+        else:
+            # 根据任务类型和步骤返回响应
+            response = self._get_response_for_task()
         
-        # 根据任务类型和步骤返回响应
-        return self._get_response_for_task()
+        # 如果提供了流式回调，模拟流式输出
+        if stream_callback and response.thinking:
+            self._simulate_streaming(response.thinking, stream_callback)
+        
+        return response
+    
+    def _simulate_streaming(self, text: str, callback: Callable[[str], None]):
+        """模拟流式输出效果"""
+        # 模拟打字机效果
+        for char in text:
+            callback(char)
+            time.sleep(0.02)  # 每个字符延迟 20ms
     
     def _get_response_for_task(self) -> LLMResponse:
         """根据任务类型获取响应"""

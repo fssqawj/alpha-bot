@@ -65,15 +65,15 @@ class AskShell:
             
             # 调用 LLM 生成下一步命令
             try:
-                with self.ui.thinking_animation():
-                    response = self.llm.generate(task, context.last_result)
+                with self.ui.streaming_display() as stream_callback:
+                    response = self.llm.generate(task, context.last_result, stream_callback=stream_callback)
             except Exception as e:
                 self.ui.print_error(f"LLM 调用失败: {e}")
                 context.status = TaskStatus.FAILED
                 break
             
-            # 显示 LLM 响应
-            self.ui.print_response(response)
+            # 显示 LLM 响应（跳过思考过程，因为已经流式显示了）
+            self.ui.print_response(response, skip_thinking=True)
             
             # 检查任务是否完成
             if response.is_complete:
