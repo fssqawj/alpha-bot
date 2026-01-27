@@ -25,7 +25,8 @@ Ask-Shell 是一个基于 AI 的智能终端助手，它能理解你的自然语
 3. GitHub 会自动上传并生成链接
 -->
 
-![browser-demo](https://github.com/user-attachments/assets/47251d22-65b5-44cd-bfca-36d39b2a9444)
+![browser-demo-1](https://github.com/user-attachments/assets/dc4f9eee-eb13-420a-979e-77e2a54c8845)
+
 <p align="center"><em>演示1：使用 ask-shell 通过自然语言操控终端</em></p>
 
 
