@@ -17,7 +17,20 @@ Ask-Shell 是一个基于 AI 的智能终端助手，它能理解你的自然语
 
 ## 🚀 快速开始
 
-### 安装依赖
+### 安装
+
+#### 方式一：开发模式安装（推荐）
+
+```bash
+# 克隆仓库
+git clone https://github.com/fssqawj/ask-shell.git
+cd ask-shell
+
+# 以开发模式安装（可以直接使用 ask-shell 或 ask 命令）
+pip install -e .
+```
+
+#### 方式二：直接安装依赖
 
 ```bash
 pip install -r requirements.txt
@@ -37,7 +50,31 @@ OPENAI_API_KEY=your-api-key-here
 
 ## 💡 使用方法
 
-### 基本用法
+### 安装后使用（推荐）
+
+如果你使用 `pip install -e .` 安装，可以直接使用命令：
+
+```bash
+# 使用 ask-shell 命令
+ask-shell "列出当前目录下的所有 Python 文件"
+
+# 或者使用更短的 ask 命令
+ask "列出当前目录下的所有 Python 文件"
+
+# 交互模式
+ask -i
+
+# 演示模式（无需 API Key）
+ask -d "创建一个测试文件夹"
+
+# 自动执行模式（不需要确认每条命令）
+ask -a "统计当前目录代码行数"
+
+# 指定工作目录
+ask -w /path/to/dir "你的任务"
+```
+
+### 直接运行（未安装时）
 
 ```bash
 # 单次执行任务
@@ -58,32 +95,36 @@ python main.py -w /path/to/dir "你的任务"
 
 ### 示例
 
+以下示例同时适用于 `ask` 命令和 `python main.py`：
+
 ```bash
 # 文件操作
-python main.py "找出所有大于 1MB 的文件"
-python main.py "创建一个名为 backup 的文件夹并复制所有 .py 文件进去"
+ask "找出所有大于 1MB 的文件"
+ask "创建一个名为 backup 的文件夹并复制所有 .py 文件进去"
 
 # 系统信息
-python main.py "查看系统内存使用情况"
-python main.py "列出所有正在运行的 Python 进程"
+ask "查看系统内存使用情况"
+ask "列出所有正在运行的 Python 进程"
 
 # Git 操作
-python main.py "提交所有更改，提交信息为 'update code'"
-python main.py "查看最近 5 次提交记录"
+ask "提交所有更改，提交信息为 'update code'"
+ask "查看最近 5 次提交记录"
 
 # 文本处理
-python main.py "统计所有 .py 文件的总行数"
-python main.py "在所有 .txt 文件中搜索包含 'error' 的行"
+ask "统计所有 .py 文件的总行数"
+ask "在所有 .txt 文件中搜索包含 'error' 的行"
 
 # 浏览器操作
-python main.py "用默认浏览器打开 GitHub"
-python main.py "打开百度搜索 Python 教程"
-python main.py "用 Chrome 浏览器打开本地文件 index.html"
+ask "用默认浏览器打开 GitHub"
+ask "打开百度搜索 Python 教程"
+ask "用 Chrome 浏览器打开本地文件 index.html"
 ```
 
 ### 交互模式
 
 ```bash
+ask -i
+# 或
 python main.py -i
 ```
 
