@@ -1,0 +1,93 @@
+site_name: Ask-Shell Documentation
+site_url: https://fssqawj.github.io/ask-shell/
+site_description: AI-powered task automation agent for terminal
+site_author: fssqawj
+repo_url: https://github.com/fssqawj/ask-shell
+repo_name: fssqawj/ask-shell
+
+theme:
+  name: material
+  language: en
+  palette:
+    # Palette toggle for light mode
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - search.share
+    - search.suggest
+    - toc.follow
+    - content.code.copy
+    - content.code.annotate
+  icon:
+    repo: fontawesome/brands/github
+
+plugins:
+  - search:
+      lang: en
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: getting-started/installation.md
+    - Quick Start: getting-started/quick-start.md
+    - Configuration: getting-started/configuration.md
+  - User Guide:
+    - Basic Usage: user-guide/basic-usage.md
+    - Advanced Features: user-guide/advanced-features.md
+    - Safety Features: user-guide/safety.md
+    - Examples: user-guide/examples.md
+  - API Reference:
+    - Agent: api/agent.md
+    - LLM Client: api/llm.md
+    - Executor: api/executor.md
+    - UI Components: api/ui.md
+  - Development:
+    - Architecture: development/architecture.md
+    - Contributing: development/contributing.md
+    - Roadmap: development/roadmap.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/fssqawj/ask-shell
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/askshell-ai/
+  analytics:
+    provider: google
+    property: !ENV GOOGLE_ANALYTICS_KEY
+
+copyright: Copyright &copy; 2024-2026 fssqawj
