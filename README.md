@@ -7,32 +7,106 @@
 </p>
 
 <p align="center">
-  <strong><em>🚀 Transform Natural Language into Powerful Shell Commands with AI Magic ✨</em></strong>
+  <strong><em>🤖 Your AI Task Automation Agent - Not Just Command Generator!</em></strong>
 </p>
 
 <p align="center">
-  <strong>Say goodbye to memorizing complex syntax - just describe what you want, and watch AI execute it instantly!</strong>
+  <strong>Describe complex tasks in plain language, and let AI execute them step-by-step until completion</strong>
+</p>
+
+<p align="center">
+  <em>Multi-step execution • Auto-retry on failure • Real-time thinking display</em>
 </p>
 
 [![PyPI version](https://img.shields.io/pypi/v/askshell-ai.svg)](https://pypi.org/project/askshell-ai/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
 
+---
+
+<div align="center">
+
+### 🌟 What Makes Ask-Shell Special?
+
+**Not Just a Command Generator - A True Task Automation Agent!**
+
+Unlike tools that only convert text to single commands, Ask-Shell:
+- 🔄 **Executes multi-step tasks** from start to finish
+- 🧠 **Learns from failures** and automatically retries
+- 💭 **Shows its thinking** in real-time for transparency
+- ✅ **Doesn't stop** until your task is actually complete
+
+</div>
+
+---
+
 [中文](README_zh.md) | English
 
 ## 📖 Overview
 
-Ask-Shell is an AI-powered intelligent terminal assistant that understands your natural language descriptions and automatically generates and executes corresponding shell commands. No need to memorize complex command syntax - just describe what you want to do in plain language, and leave the rest to AI.
+Ask-Shell is an **AI-powered task automation agent** that goes beyond simple command generation. Unlike tools that only translate single queries into commands, Ask-Shell acts as an intelligent agent that can handle **multi-step tasks**, **learn from failures**, and **adapt its strategy** until your task is truly complete.
 
-### Features
+## 🎯 Why Ask-Shell?
 
-- 🤖 **Natural Language Interaction** - Describe tasks in plain language, AI generates commands automatically
-- 🔒 **Safety Confirmation** - Dangerous operations are automatically identified and require confirmation
-- 🎯 **Multiple Running Modes** - Supports single execution, interactive mode, and auto mode
-- 🎨 **Beautiful Interface** - Rich terminal output using Rich library with real-time animation effects
-- ⚡ **Real-time Feedback** - AI thinking process displayed in real-time, command execution with animations
-- 🔄 **Smart Retry** - AI tries alternative solutions when command execution fails
-- 🧪 **Demo Mode** - Experience features without API Key
+### **Task-Oriented, Not Command-Oriented**
+
+| Other Tools | Ask-Shell |
+|------------|-----------|
+| Generate ONE command → Done | Execute MULTIPLE steps → Analyze results → Adjust strategy → Complete task |
+| "Here's your command, you run it" | "I'll keep working until the task is finished" |
+| Fails? You figure it out | Fails? AI analyzes, retries, finds alternatives |
+
+### **Core Advantages**
+
+#### 🔄 **Multi-Step Task Automation**
+Ask-Shell doesn't just generate a single command - it creates an **intelligent execution loop**:
+- Executes commands step-by-step
+- Analyzes execution results after each step
+- Dynamically adjusts strategy based on feedback
+- Continues until task completion
+
+**Example**: `"Organize my project files"`
+```
+Other tools: ls -la  # Just one command, you do the rest
+Ask-Shell:  Step 1: Analyze directory structure
+            Step 2: Create organized folders
+            Step 3: Move files to appropriate locations
+            Step 4: Verify organization
+            ✓ Task complete!
+```
+
+#### 🧠 **Intelligent Error Recovery**
+When commands fail, Ask-Shell:
+- **Analyzes** why the command failed
+- **Learns** from the error message
+- **Tries** alternative approaches
+- **Adapts** its strategy automatically
+
+No more copy-pasting error messages to ChatGPT - Ask-Shell handles it in real-time!
+
+#### 💭 **Real-Time Thinking Display**
+Watch AI think through your task:
+- See the reasoning process as it happens
+- Understand why each command is executed
+- Learn shell commands naturally
+- Build trust through transparency
+
+#### 🔒 **Smart Safety Protection**
+Dual-layer safety mechanism:
+- AI-powered dangerous operation detection
+- Built-in command blacklist protection
+- Interactive confirmation with command editing
+- Clear danger explanations
+
+### Key Features
+
+- 🤖 **Autonomous Task Agent** - Not just command generation, but complete task execution
+- 🔄 **Smart Retry Loop** - Automatically recovers from failures and tries alternatives
+- 💭 **Transparent AI Thinking** - Real-time display of AI's reasoning process
+- 🎨 **Beautiful Interface** - Rich terminal output with animations and syntax highlighting
+- 🔒 **Safety First** - Intelligent danger detection with user confirmation
+- 🎯 **Multiple Modes** - Single execution, interactive mode, and auto mode
+- 🧪 **Demo Mode** - Try it out without an API Key
 
 ## 🎬 Demo
 
@@ -140,28 +214,53 @@ python ask_shell/cli.py -w /path/to/dir "your task"
 
 The following examples work with both `ask` command and `python ask_shell/cli.py`:
 
+#### **Simple Tasks** (Like other tools)
 ```bash
 # File operations
 ask "find all files larger than 1MB"
-ask "create a folder named backup and copy all .py files into it"
-
-# System information
-ask "check system memory usage"
 ask "list all running Python processes"
+```
 
-# Git operations
-ask "commit all changes with message 'update code'"
-ask "show last 5 commit logs"
+#### **Complex Multi-Step Tasks** (Where Ask-Shell shines!)
+```bash
+# Project organization - Multiple steps executed automatically
+ask "organize this project: create docs, tests, and src folders, then move files accordingly"
 
-# Text processing
-ask "count total lines of all .py files"
-ask "search for lines containing 'error' in all .txt files"
+# Environment setup - Handles errors and retries
+ask "set up a Python virtual environment and install dependencies from requirements.txt"
 
+# Git workflow - Complete task automation
+ask "commit all changes with meaningful message, then push to origin"
+
+# System maintenance - Intelligent execution
+ask "find and compress all log files older than 7 days"
+
+# Development tasks - Multi-step coordination
+ask "find all TODO comments in Python files and create a summary file"
+```
+
+#### **Browser & System Operations**
+```bash
 # Browser operations
 ask "open GitHub in default browser"
 ask "open Google and search for Python tutorial"
-ask "open local file index.html in Chrome browser"
+
+# System information
+ask "check system memory usage"
+ask "show disk usage for all mounted drives"
 ```
+
+#### **More Examples**
+```bash
+# Text processing with verification
+ask "count total lines of all .py files"
+ask "search for lines containing 'error' in all .txt files"
+
+# Backup operations
+ask "create a timestamped backup of this directory"
+```
+
+**💡 Pro Tip**: The more complex your task, the more Ask-Shell's advantages shine compared to simple command generators!
 
 ### Interactive Mode
 
@@ -183,14 +282,35 @@ Ask-Shell > exit  # Exit
 ```
 ask-shell/
 ├── ask_shell/           # Core code
-│   ├── agent.py        # Main logic
-│   ├── executor/       # Command executor
-│   ├── llm/            # LLM client
+│   ├── agent.py        # Task automation agent with intelligent loop
+│   ├── executor/       # Command executor with safety checks
+│   ├── llm/            # LLM client with context management
 │   ├── models/         # Data models
-│   └── ui/             # User interface
+│   └── ui/             # Beautiful terminal interface
 ├── requirements.txt    # Dependencies
 └── .env.example        # Environment variable template
 ```
+
+## 🆚 Comparison with Other Tools
+
+| Feature | Shell-GPT | Aichat | Warp AI | **Ask-Shell** |
+|---------|-----------|--------|---------|---------------|
+| **Multi-step task execution** | ❌ | ❌ | ⚠️ Limited | ✅ **Full support** |
+| **Auto-retry on failure** | ❌ | ❌ | ❌ | ✅ **Yes** |
+| **Task context awareness** | ❌ | Partial | Partial | ✅ **Full context** |
+| **Real-time thinking display** | ❌ | ❌ | ⚠️ Basic | ✅ **Streaming** |
+| **Execution loop** | ❌ Single-shot | ❌ Chat only | ⚠️ Limited | ✅ **Until completion** |
+| **Error analysis** | ❌ Manual | ❌ Manual | ⚠️ Basic | ✅ **Automatic** |
+| **Dangerous operation detection** | ⚠️ Basic | ⚠️ Basic | ✅ Yes | ✅ **Dual-layer** |
+| **Open source** | ✅ Python | ✅ Rust | ❌ Closed | ✅ **Python** |
+| **Easy to extend** | ⚠️ | ⚠️ | ❌ | ✅ **Plugin-ready** |
+
+### What Makes Ask-Shell Different?
+
+**Shell-GPT / sgpt**: Great for quick command translation, but stops after generating one command.  
+**Aichat**: Powerful chat interface with many features, but not task-focused.  
+**Warp Terminal**: Modern terminal with AI features, but closed-source and requires full terminal replacement.  
+**Ask-Shell**: ✨ **Focused on autonomous task completion** - keeps executing until your task is actually done.
 
 ## ⚙️ Configuration Options
 
@@ -219,19 +339,58 @@ MODEL_NAME=gpt-4
 
 ## 🔒 Safety Features
 
-Ask-Shell has built-in safety mechanisms:
+Ask-Shell takes safety seriously with multiple protection layers:
 
-1. **Dangerous Operation Detection** - AI identifies potentially dangerous commands
-2. **Auto Confirmation Prompt** - Dangerous operations require user confirmation
-3. **Command Editing** - Users can edit commands before execution
-4. **Skip Option** - Users can skip commands they don't want to execute
+### 🛡️ Dual-Layer Protection
+
+1. **AI-Powered Detection** - GPT-4 analyzes commands for potential dangers
+   - Understands context and intent
+   - Explains WHY a command is dangerous
+   - Catches subtle risks that pattern matching misses
+
+2. **Built-in Blacklist** - Hardcoded protection against catastrophic commands
+   - `rm -rf /` and variants
+   - Direct disk operations
+   - System file modifications
+   - Fork bombs and malicious patterns
+
+### ✋ User Control
+
+3. **Interactive Confirmation** - You always have the final say
+   - Clear danger warnings with explanations
+   - Edit commands before execution
+   - Skip commands you don't trust
+   - Quit anytime
+
+4. **Transparency** - Know exactly what's happening
+   - See AI's reasoning process
+   - Review commands before execution
+   - Understand potential risks
+
+**Safety Philosophy**: "Trust, but verify" - Give AI autonomy, but keep humans in control of critical decisions.
 
 ## 🛠️ Tech Stack
 
-- **Python 3.7+**
-- **OpenAI API** - GPT-4 model
-- **Rich** - Beautiful terminal output
+- **Python 3.7+** - Easy to understand and extend
+- **OpenAI API** - GPT-4 model (extensible to other LLMs)
+- **Rich** - Beautiful terminal output with streaming support
 - **python-dotenv** - Environment variable management
+
+### Architecture Highlights
+
+- **Agent Loop Pattern**: Continuous task execution with feedback integration
+- **Context Management**: Full conversation history with result tracking
+- **Modular Design**: Easy to add new LLM providers, executors, or UI components
+- **Safety-First**: Dual-layer protection (AI + blacklist)
+
+## 🗺️ Roadmap
+
+- [ ] Support for multiple LLM providers (Claude, Gemini, Ollama)
+- [ ] Task history and replay functionality
+- [ ] Plugin system for custom commands
+- [ ] Task templates library
+- [ ] Web UI interface
+- [ ] Team collaboration features
 
 ## 📝 License
 
