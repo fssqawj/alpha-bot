@@ -204,7 +204,7 @@ Ask-Shell 内置安全机制：
 
 ## 📝 License
 
-MIT License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🤝 贡献
 
