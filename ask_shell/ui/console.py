@@ -132,7 +132,7 @@ class ConsoleUI:
                 # 生成的命令 - 实时显示
                 if self.command:
                     panels.append(Panel(
-                        Syntax(self.command, "bash", theme="monokai", line_numbers=False),
+                        Syntax(self.command, "bash", theme="monokai", line_numbers=False, word_wrap=True),
                         title="[bold green]✨ 生成的命令[/bold green]",
                         border_style="green",
                         padding=(0, 1)
@@ -210,7 +210,7 @@ class ConsoleUI:
         # 生成的命令 - 高亮显示
         if response.command:
             self.console.print(Panel(
-                Syntax(response.command, "bash", theme="monokai", line_numbers=False),
+                Syntax(response.command, "bash", theme="monokai", line_numbers=False, word_wrap=True),
                 title="[bold green]✨ 生成的命令[/bold green]",
                 border_style="green",
                 padding=(0, 1)
