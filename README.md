@@ -30,11 +30,20 @@
 
 **Not Just a Command Generator - A True Task Automation Agent!**
 
-Unlike tools that only convert text to single commands, Ask-Shell:
-- 🔄 **Executes multi-step tasks** from start to finish
-- 🧠 **Learns from failures** and automatically retries
-- 💭 **Shows its thinking** in real-time for transparency
-- ✅ **Doesn't stop** until your task is actually complete
+<table>
+<tr>
+<td align="center">🔄</td>
+<td><strong>Executes multi-step tasks</strong><br/>from start to finish</td>
+<td align="center">🧠</td>
+<td><strong>Learns from failures</strong><br/>and automatically retries</td>
+</tr>
+<tr>
+<td align="center">💭</td>
+<td><strong>Shows its thinking</strong><br/>in real-time for transparency</td>
+<td align="center">✅</td>
+<td><strong>Doesn't stop</strong><br/>until your task is complete</td>
+</tr>
+</table>
 
 </div>
 

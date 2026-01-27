@@ -30,11 +30,20 @@
 
 **不只是命令生成器 - 真正的任务自动化代理！**
 
-与只能将文本转为单条命令的工具不同，Ask-Shell：
-- 🔄 **执行多步骤任务** 从头到尾完成
-- 🧠 **从失败中学习** 自动重试
-- 💭 **展示思考过程** 实时透明
-- ✅ **持续执行** 直到任务真正完成
+<table>
+<tr>
+<td align="center">🔄</td>
+<td><strong>执行多步骤任务</strong><br/>从头到尾完成</td>
+<td align="center">🧠</td>
+<td><strong>从失败中学习</strong><br/>自动重试</td>
+</tr>
+<tr>
+<td align="center">💭</td>
+<td><strong>展示思考过程</strong><br/>实时透明</td>
+<td align="center">✅</td>
+<td><strong>持续执行</strong><br/>直到任务真正完成</td>
+</tr>
+</table>
 
 </div>
 
