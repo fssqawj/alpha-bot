@@ -1,229 +1,226 @@
 # Ask-Shell
 
-用自然语言操控你的终端 - 让 AI 帮你生成并执行 Shell 命令
+[中文](README_zh.md) | English
 
-## 📖 项目简介
+Control your terminal with natural language - Let AI generate and execute shell commands for you.
 
-Ask-Shell 是一个基于 AI 的智能终端助手，它能理解你的自然语言描述，自动生成并执行相应的 Shell 命令。无需记忆复杂的命令语法，只需用人话描述你想做什么，剩下的交给 AI。
+## 📖 Overview
 
-### 特性
+Ask-Shell is an AI-powered intelligent terminal assistant that understands your natural language descriptions and automatically generates and executes corresponding shell commands. No need to memorize complex command syntax - just describe what you want to do in plain language, and leave the rest to AI.
 
-- 🤖 **自然语言交互** - 用人话描述任务，AI 自动生成命令
-- 🔒 **安全确认机制** - 危险操作会自动识别并要求确认
-- 🎯 **多种运行模式** - 支持单次执行、交互模式、自动模式
-- 🎨 **美观的界面** - 使用 Rich 库提供丰富的终端输出，带有实时动画效果
-- ⚡ **实时反馈** - AI 思考过程实时显示，命令执行带有动画效果
-- 🔄 **智能重试** - 命令执行失败时，AI 会尝试其他方案
-- 🧪 **演示模式** - 无需 API Key 即可体验功能
+### Features
 
-## 🎬 效果展示
+- 🤖 **Natural Language Interaction** - Describe tasks in plain language, AI generates commands automatically
+- 🔒 **Safety Confirmation** - Dangerous operations are automatically identified and require confirmation
+- 🎯 **Multiple Running Modes** - Supports single execution, interactive mode, and auto mode
+- 🎨 **Beautiful Interface** - Rich terminal output using Rich library with real-time animation effects
+- ⚡ **Real-time Feedback** - AI thinking process displayed in real-time, command execution with animations
+- 🔄 **Smart Retry** - AI tries alternative solutions when command execution fails
+- 🧪 **Demo Mode** - Experience features without API Key
 
-<!-- 
-请在 GitHub 编辑此 README 时，将视频拖拽到下方区域：
-1. 点击 GitHub 上的编辑按钮
-2. 将 ask-shell-demo.mp4 拖拽到编辑器中
-3. GitHub 会自动上传并生成链接
--->
+## 🎬 Demo
 
 ![browser-demo](https://github.com/user-attachments/assets/717ce22f-084a-4081-8ad0-ae23f7daf0ff)
 
-
-<p align="center"><em>演示1：使用 ask-shell 通过自然语言操控终端</em></p>
-
+<p align="center"><em>Demo 1: Using ask-shell to control terminal with natural language</em></p>
 
 ![ask-shell-demo](https://github.com/user-attachments/assets/8721876f-92dc-4762-a03d-64d845546de0)
 
+<p align="center"><em>Demo 2: Using ask-shell to control terminal with natural language</em></p>
 
-<p align="center"><em>演示2：使用 ask-shell 通过自然语言操控终端</em></p>
+Ask-Shell provides a beautiful terminal interface with real-time feedback:
 
-Ask-Shell 提供了美观的终端界面和实时反馈：
+- 💭 **Real-time Thinking Process** - See AI's thought process
+- ⚙️ **Command Execution Animation** - Dynamic loading effects during command execution
+- ✨ **Syntax Highlighting** - Generated commands with syntax highlighting
+- 📊 **Structured Output** - Clear panels and icon displays
+- 🎯 **Interactive Confirmation** - Dangerous operations with clear warning indicators
 
-- 💭 **思考过程实时显示** - 看到 AI 的思考过程
-- ⚙️ **命令执行动画** - 执行命令时显示动态加载效果
-- ✨ **语法高亮** - 生成的命令带有语法高亮
-- 📊 **结构化输出** - 清晰的面板和图标显示
-- 🎯 **交互式确认** - 危险操作带有明显的警告标识
+## 🚀 Quick Start
 
-## 🚀 快速开始
+### Installation
 
-### 安装
-
-#### 方式一：开发模式安装（推荐）
+#### Method 1: Development Mode (Recommended)
 
 ```bash
-# 克隆仓库
+# Clone the repository
 git clone https://github.com/fssqawj/ask-shell.git
 cd ask-shell
 
-# 以开发模式安装（可以直接使用 ask-shell 或 ask 命令）
+# Install in development mode (can use ask-shell or ask command directly)
 pip install -e .
 ```
 
-#### 方式二：直接安装依赖
+#### Method 2: Install from PyPI
+
+```bash
+pip install askshell-ai
+```
+
+#### Method 3: Install Dependencies Only
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 配置 API Key
+### Configure API Key
 
-1. 复制环境变量模板：
+1. Copy the environment variable template:
 ```bash
 cp .env.example .env
 ```
 
-2. 编辑 `.env` 文件，填入你的 OpenAI API Key：
+2. Edit the `.env` file and fill in your OpenAI API Key:
 ```bash
 OPENAI_API_KEY=your-api-key-here
 ```
 
-## 💡 使用方法
+## 💡 Usage
 
-### 安装后使用（推荐）
+### After Installation (Recommended)
 
-如果你使用 `pip install -e .` 安装，可以直接使用命令：
+If you installed with `pip install -e .` or `pip install askshell-ai`, you can use commands directly:
 
 ```bash
-# 使用 ask-shell 命令
-ask-shell "列出当前目录下的所有 Python 文件"
+# Use ask-shell command
+ask-shell "list all Python files in current directory"
 
-# 或者使用更短的 ask 命令
-ask "列出当前目录下的所有 Python 文件"
+# Or use the shorter ask command
+ask "list all Python files in current directory"
 
-# 交互模式
+# Interactive mode
 ask -i
 
-# 演示模式（无需 API Key）
-ask -d "创建一个测试文件夹"
+# Demo mode (no API Key required)
+ask -d "create a test folder"
 
-# 自动执行模式（不需要确认每条命令）
-ask -a "统计当前目录代码行数"
+# Auto execution mode (no confirmation needed for each command)
+ask -a "count lines of code in current directory"
 
-# 指定工作目录
-ask -w /path/to/dir "你的任务"
+# Specify working directory
+ask -w /path/to/dir "your task"
 ```
 
-### 直接运行（未安装时）
+### Direct Run (Without Installation)
 
 ```bash
-# 单次执行任务
-python main.py "列出当前目录下的所有 Python 文件"
+# Single task execution
+python ask_shell/cli.py "list all Python files in current directory"
 
-# 交互模式
-python main.py -i
+# Interactive mode
+python ask_shell/cli.py -i
 
-# 演示模式（无需 API Key）
-python main.py -d "创建一个测试文件夹"
+# Demo mode (no API Key required)
+python ask_shell/cli.py -d "create a test folder"
 
-# 自动执行模式（不需要确认每条命令）
-python main.py -a "统计当前目录代码行数"
+# Auto execution mode
+python ask_shell/cli.py -a "count lines of code in current directory"
 
-# 指定工作目录
-python main.py -w /path/to/dir "你的任务"
+# Specify working directory
+python ask_shell/cli.py -w /path/to/dir "your task"
 ```
 
-### 示例
+### Examples
 
-以下示例同时适用于 `ask` 命令和 `python main.py`：
+The following examples work with both `ask` command and `python ask_shell/cli.py`:
 
 ```bash
-# 文件操作
-ask "找出所有大于 1MB 的文件"
-ask "创建一个名为 backup 的文件夹并复制所有 .py 文件进去"
+# File operations
+ask "find all files larger than 1MB"
+ask "create a folder named backup and copy all .py files into it"
 
-# 系统信息
-ask "查看系统内存使用情况"
-ask "列出所有正在运行的 Python 进程"
+# System information
+ask "check system memory usage"
+ask "list all running Python processes"
 
-# Git 操作
-ask "提交所有更改，提交信息为 'update code'"
-ask "查看最近 5 次提交记录"
+# Git operations
+ask "commit all changes with message 'update code'"
+ask "show last 5 commit logs"
 
-# 文本处理
-ask "统计所有 .py 文件的总行数"
-ask "在所有 .txt 文件中搜索包含 'error' 的行"
+# Text processing
+ask "count total lines of all .py files"
+ask "search for lines containing 'error' in all .txt files"
 
-# 浏览器操作
-ask "用默认浏览器打开 GitHub"
-ask "打开百度搜索 Python 教程"
-ask "用 Chrome 浏览器打开本地文件 index.html"
+# Browser operations
+ask "open GitHub in default browser"
+ask "open Google and search for Python tutorial"
+ask "open local file index.html in Chrome browser"
 ```
 
-### 交互模式
+### Interactive Mode
 
 ```bash
 ask -i
-# 或
-python main.py -i
+# or
+python ask_shell/cli.py -i
 ```
 
-进入交互模式后，可以持续输入任务：
+In interactive mode, you can continuously input tasks:
 ```
-Ask-Shell > 列出当前目录下的文件
-Ask-Shell > 创建一个测试文件
-Ask-Shell > exit  # 退出
+Ask-Shell > list files in current directory
+Ask-Shell > create a test file
+Ask-Shell > exit  # Exit
 ```
 
-## 📁 项目结构
+## 📁 Project Structure
 
 ```
 ask-shell/
-├── ask_shell/           # 核心代码
-│   ├── agent.py        # 主要逻辑
-│   ├── executor/       # 命令执行器
-│   ├── llm/            # LLM 客户端
-│   ├── models/         # 数据模型
-│   └── ui/             # 用户界面
-├── main.py             # 入口程序
-├── requirements.txt    # 依赖列表
-└── .env.example        # 环境变量模板
+├── ask_shell/           # Core code
+│   ├── agent.py        # Main logic
+│   ├── executor/       # Command executor
+│   ├── llm/            # LLM client
+│   ├── models/         # Data models
+│   └── ui/             # User interface
+├── requirements.txt    # Dependencies
+└── .env.example        # Environment variable template
 ```
 
-## ⚙️ 配置选项
+## ⚙️ Configuration Options
 
-### 环境变量
+### Environment Variables
 
-在 `.env` 文件中可以配置以下选项：
+You can configure the following options in the `.env` file:
 
 ```bash
-# OpenAI API Key（必需）
+# OpenAI API Key (required)
 OPENAI_API_KEY=your-api-key-here
 
-# 自定义 API 地址（可选，用于兼容的 API）
+# Custom API URL (optional, for compatible APIs)
 OPENAI_API_BASE=https://api.openai.com/v1
 
-# 模型名称（可选，默认：gpt-4）
+# Model name (optional, default: gpt-4)
 MODEL_NAME=gpt-4
 ```
 
-### 命令行参数
+### Command Line Arguments
 
-- `task` - 要执行的任务描述
-- `-i, --interactive` - 交互模式
-- `-a, --auto` - 自动执行模式（不需要确认）
-- `-d, --demo` - 演示模式（不需要 API Key）
-- `-w, --workdir` - 指定工作目录
+- `task` - Task description to execute
+- `-i, --interactive` - Interactive mode
+- `-a, --auto` - Auto execution mode (no confirmation needed)
+- `-d, --demo` - Demo mode (no API Key required)
+- `-w, --workdir` - Specify working directory
 
-## 🔒 安全特性
+## 🔒 Safety Features
 
-Ask-Shell 内置安全机制：
+Ask-Shell has built-in safety mechanisms:
 
-1. **危险操作识别** - AI 会判断命令是否具有危险性
-2. **自动确认提示** - 危险操作会要求用户确认
-3. **命令编辑** - 用户可以在执行前编辑命令
-4. **跳过选项** - 用户可以跳过不想执行的命令
+1. **Dangerous Operation Detection** - AI identifies potentially dangerous commands
+2. **Auto Confirmation Prompt** - Dangerous operations require user confirmation
+3. **Command Editing** - Users can edit commands before execution
+4. **Skip Option** - Users can skip commands they don't want to execute
 
-## 🛠️ 技术栈
+## 🛠️ Tech Stack
 
 - **Python 3.7+**
-- **OpenAI API** - GPT-4 模型
-- **Rich** - 美观的终端输出
-- **python-dotenv** - 环境变量管理
+- **OpenAI API** - GPT-4 model
+- **Rich** - Beautiful terminal output
+- **python-dotenv** - Environment variable management
 
 ## 📝 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🤝 贡献
+## 🤝 Contributing
 
-欢迎提交 Issue 和 Pull Request！
+Issues and Pull Requests are welcome!
