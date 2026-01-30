@@ -1,7 +1,7 @@
 """Image Generation Skill - Create images using AI"""
 
 from typing import List, Optional, Dict, Any
-from .base_skill import BaseSkill, SkillResponse, SkillCapability
+from .base_skill import BaseSkill, SkillExecutionResponse, SkillCapability
 
 
 class ImageSkill(BaseSkill):
@@ -37,25 +37,26 @@ class ImageSkill(BaseSkill):
         task: str,
         context: Optional[Dict[str, Any]] = None,
         **kwargs
-    ) -> SkillResponse:
+    ) -> SkillExecutionResponse:
         """
         Execute image generation
-        
+            
         Args:
             task: Task description (e.g., "generate an image of a sunset")
             context: Execution context
-            **kwargs: Additional parameters (size, style, etc.)
+            **kwargs: Additional parameters including selection_reasoning
             
         Returns:
-            SkillResponse with generated file path
+            SkillExecutionResponse with generated file path
         """
+        # Get the reasoning for why this skill was selected (though image skill doesn't modify its behavior based on this)
+        selection_reasoning = kwargs.get('selection_reasoning', '')
+            
         # TODO: Implement actual image generation
         # This is a placeholder implementation
         
-        return SkillResponse(
-            skill_name=self.name,
+        return SkillExecutionResponse(
             thinking="Image generation requested. This is a placeholder - implement with DALL-E, Stable Diffusion, or similar API.",
-            is_complete=True,
             direct_response="[Placeholder] Image Skill not yet fully implemented.\n\nTo use this skill:\n1. Choose an image generation API (DALL-E, Stable Diffusion, etc.)\n2. Install required libraries (openai, diffusers, etc.)\n3. Configure API keys\n4. Implement generation logic in this file\n\nExample implementation would:\n- Extract image description from task\n- Call image generation API\n- Save generated image locally\n- Return file path in generated_files",
             generated_files=[],  # Would be ["generated_image.png"] after implementation
             file_metadata={

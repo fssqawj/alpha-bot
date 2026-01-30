@@ -5,7 +5,7 @@ from typing import Optional
 from .models.types import TaskContext, TaskStatus, ExecutionResult
 from .executor.shell import ShellExecutor
 from .ui.console import ConsoleUI
-from .skills import SkillManager, LLMSkill, PPTSkill, ImageSkill, BrowserSkill
+from .skills import SkillManager, CommandSkill, DirectLLMSkill, PPTSkill, ImageSkill, BrowserSkill
 
 
 class AskShell:
@@ -42,14 +42,18 @@ class AskShell:
     
     def _register_skills(self):
         """注册所有可用技能"""
-        # 注册LLM技能（默认技能）
-        llm_skill = LLMSkill()
-        self.skill_manager.register_skill(llm_skill, is_default=True)
+        # 注册命令生成技能（默认技能）
+        command_skill = CommandSkill()
+        self.skill_manager.register_skill(command_skill, is_default=True)
         
         # 将LLM客户端传递给SkillManager以支持智能选择
-        if hasattr(llm_skill, 'llm'):
+        if hasattr(command_skill, 'llm'):
             from .skills import SkillSelector
-            self.skill_manager.skill_selector = SkillSelector(llm_skill.llm)
+            self.skill_manager.skill_selector = SkillSelector(command_skill.llm)
+        
+        # 注册直接LLM处理技能
+        direct_llm_skill = DirectLLMSkill()
+        self.skill_manager.register_skill(direct_llm_skill)
         
         # 注册PPT生成技能
         ppt_skill = PPTSkill()
@@ -101,6 +105,8 @@ class AskShell:
         Returns:
             TaskContext: 任务执行上下文
         """
+        # Track skill responses for context
+        
         # 主循环：不断调用技能直到任务完成
         while context.status == TaskStatus.RUNNING:
             context.iteration += 1
@@ -110,17 +116,15 @@ class AskShell:
             skill_context = {
                 'last_result': context.last_result,
                 'iteration': context.iteration,
-                'history': context.history
+                'history': context.history,
             }
             
             # 使用技能管理器执行任务
             try:
-                with self.ui.streaming_display() as stream_callback:
-                    response = self.skill_manager.execute(
-                        task,
-                        context=skill_context,
-                        stream_callback=stream_callback
-                    )
+                response = self.skill_manager.execute(
+                    task,
+                    context=skill_context,
+                )
             except Exception as e:
                 self.ui.print_error(f"技能执行失败: {e}")
                 context.status = TaskStatus.FAILED
@@ -129,25 +133,16 @@ class AskShell:
             # 显示响应（跳过所有字段，因为已经流式显示了）
             self.ui.print_skill_response(response, skip_all=True)
             
-            # 检查是否需要LLM处理（智能模式）
-            if response.needs_llm_processing and response.direct_response:
-                # 技能已经处理了上一步命令的输出，显示结果
-                self.ui.print_direct_response(response.direct_response)
-                
-                # 如果任务完成，退出
-                if response.is_complete:
-                    context.status = TaskStatus.COMPLETED
-                    self.ui.print_complete()
-                    break
-                else:
-                    # 继续下一步
-                    continue
+            # Determine if task is complete based on skill selector's assessment
+            # Use task_complete field which is set by the skill selector
+            task_complete = response.task_complete if response.task_complete is not None else False
+            
             
             # 获取要执行的命令
             command = response.command.strip() if response.command else ""
             
             # 如果任务完成且没有命令需要执行，直接退出
-            if response.is_complete and not command:
+            if task_complete and not command:
                 context.status = TaskStatus.COMPLETED
                 self.ui.print_complete()
                 break
@@ -155,6 +150,7 @@ class AskShell:
             # 如果没有命令，跳过
             if not command:
                 self.ui.print_warning("没有生成命令，跳过...")
+                context.history.append(ExecutionResult(command="", returncode=0, stdout="", stderr="没有生成命令，跳过...", skill_response=response))
                 continue
             
             # 处理用户确认（只有危险操作才需要确认）
@@ -170,7 +166,8 @@ class AskShell:
                     command=command,
                     returncode=-1,
                     stdout="",
-                    stderr="用户选择跳过此命令，请尝试其他方法"
+                    stderr="用户选择跳过此命令，请尝试其他方法",
+                    skill_response=response
                 )
                 context.add_result(skip_result)
                 continue
@@ -180,7 +177,7 @@ class AskShell:
             # 执行命令
             with self.ui.executing_animation(command):
                 result = self.executor.execute(command)
-            context.add_result(result)
+            context.add_result(ExecutionResult(command=command, returncode=result.returncode, stdout=result.stdout, stderr=result.stderr, skill_response=response))
             
             # 显示执行结果
             self.ui.print_result(result)
@@ -190,7 +187,7 @@ class AskShell:
                 self.ui.print_error_analysis(response.error_analysis)
             
                 # 如果任务标记为完成，在执行完最后一条命令后退出
-            if response.is_complete:
+            if task_complete:
                 context.status = TaskStatus.COMPLETED
                 self.ui.print_complete()
                 # 任务完成后清理技能状态，特别是浏览器技能

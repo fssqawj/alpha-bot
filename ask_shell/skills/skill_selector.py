@@ -2,7 +2,10 @@
 
 import json
 from typing import List, Optional, Dict, Any
+
+from loguru import logger
 from .base_skill import BaseSkill
+from ..models.types import ExecutionResult
 
 
 class SkillSelector:
@@ -25,22 +28,26 @@ class SkillSelector:
     "selected_skill": "技能名称",
     "confidence": 0.95,
     "reasoning": "选择该技能的理由",
-    "alternative_skills": ["备选技能1", "备选技能2"]
+    "task_complete": false
 }}
 
 选择规则：
-1. 仔细分析任务的本质需求
+1. 仔细分析任务的本质需求，和当前任务的进展情况
 2. 优先选择最专业的技能（例如：创建PPT就选PPTSkill，生成图片就选ImageSkill）
-3. 只有当任务需要执行shell命令或内容处理时，才选择LLMSkill
-4. confidence 应该反映你对选择的确信程度（0.0-1.0）
-5. 如果任务可能需要多个技能配合，在alternative_skills中列出
+3. 需要执行shell命令时，选择CommandSkill
+4. 需要直接处理内容（翻译、总结、分析等）时，选择DirectLLMSkill
+5. confidence 应该反映你对选择的确信程度（0.0-1.0）
+6. 如果任务已经完成，设置task_complete为true，selected_skill为null或空字符串
+8. 参考之前的执行历史（包括思考过程和下一步计划）来做出更好的选择
+
+任务完成的判断标准：
+上一步执行技能的 命令输出 或者 直接响应 成功完成了 用户任务
 
 用户任务：{task}
 
 当前执行上下文：
-{context}
-"""
-    
+{context}"""
+
     def __init__(self, llm_client):
         """
         Initialize skill selector
@@ -55,7 +62,7 @@ class SkillSelector:
         task: str,
         available_skills: List[BaseSkill],
         context: Optional[Dict[str, Any]] = None
-    ) -> tuple[BaseSkill, float, str]:
+    ) -> tuple[Optional[BaseSkill], float, str, bool]:
         """
         Use LLM to select the best skill for the task
         
@@ -79,30 +86,35 @@ class SkillSelector:
             task=task,
             context=context_description
         )
-        
+        logger.info(f"Skill Selection LLM Prompt: {prompt}")
         # Call LLM for skill selection
         try:
             response = self._call_llm_for_selection(prompt)
-            
+            logger.info(f"Skill Selection LLM Response: {response}")
             # Parse LLM response
-            selected_skill_name = response.get("selected_skill", "LLMSkill")
+            selected_skill_name = response.get("selected_skill", "CommandSkill")
             confidence = float(response.get("confidence", 0.8))
             reasoning = response.get("reasoning", "LLM选择的技能")
+            task_complete = bool(response.get("task_complete", False))
             
             # Find the skill object
             selected_skill = self._find_skill_by_name(available_skills, selected_skill_name)
             
+            # If task is marked as complete, return None for skill
+            if task_complete:
+                return None, confidence, reasoning, True
+            
             if selected_skill is None:
-                # Fallback to first skill (should be default LLMSkill)
+                # Fallback to first skill (should be default CommandSkill)
                 selected_skill = available_skills[0]
                 confidence = 0.7
                 reasoning = f"未找到'{selected_skill_name}'，使用默认技能"
             
-            return selected_skill, confidence, reasoning
+            return selected_skill, confidence, reasoning, task_complete
             
         except Exception as e:
             # Fallback to first skill
-            return available_skills[0], 0.5, f"选择失败，使用默认技能: {str(e)}"
+            return available_skills[0], 0.5, f"选择失败，使用默认技能: {str(e)}", False
     
     def _build_skills_description(self, skills: List[BaseSkill]) -> str:
         """Build formatted description of all available skills"""
@@ -122,7 +134,7 @@ class SkillSelector:
             return "无执行历史"
         
         iteration = context.get('iteration', 0)
-        history = context.get('history', [])
+        history: list[ExecutionResult] = context.get('history', [])
         last_result = context.get('last_result')
         
         desc = f"- 当前步骤: 第{iteration}步\n"
@@ -130,49 +142,24 @@ class SkillSelector:
         # 添加历史信息
         if history:
             desc += f"- 历史步骤数: {len(history)}\n"
-            desc += "- 历史执行记录:\n"
-            for i, hist_item in enumerate(history[-3:], 1):  # 只显示最近3个历史记录
+            desc += "- 历史执行记录(只显示最近3个):\n"
+            for i, hist_item in enumerate(history[-3:]):  # 只显示最近3个历史记录
                 # 检查hist_item是ExecutionResult对象还是字典
-                if hasattr(hist_item, 'command'):  # ExecutionResult对象
-                    skill_name = getattr(hist_item, 'skill', 'Unknown')
-                    command = getattr(hist_item, 'command', '')[:100]  # 只取前100个字符
-                    success = '成功' if hist_item.success else '失败'
-                elif isinstance(hist_item, dict):  # 字典格式
-                    skill_name = hist_item.get('skill', 'Unknown')
-                    command = hist_item.get('command', '')[:100]  # 只取前100个字符
-                    success = hist_item.get('success', 'Unknown')
-                else:  # 其他情况
-                    skill_name = 'Unknown'
-                    command = str(hist_item)[:100]
-                    success = 'Unknown'
-                desc += f"  {i}. [{skill_name}] {command} ({success})\n"
+                idx = max(len(history) - 2, 1) + i
+                success = '成功' if hist_item.success else '失败'
+                desc += f"第 {idx} 步执行记录\n"
+                desc += f"  技能选择: {hist_item.skill_response.skill_name}\n"
+                desc += f"  技能选择原因: {hist_item.skill_response.select_reason}\n"
+                desc += f"  技能执行思考过程: {hist_item.skill_response.thinking}\n"
+                desc += f"  下一步计划: {hist_item.skill_response.next_step}\n"
+                if hist_item.command:
+                    desc += f"  执行的命令: {hist_item.command}\n"
+                    desc += f"  命令的输出: {hist_item.output}\n"
+                    desc += f"  是否执行成功: {success}\n"
+                if hist_item.skill_response.direct_response:
+                    desc += f"  直接响应: {hist_item.skill_response.direct_response}\n"
         else:
             desc += "- 历史执行记录: 无\n"
-        
-        # 添加上一步结果信息
-        if last_result:
-            # 检查last_result是ExecutionResult对象还是字典
-            if hasattr(last_result, 'success'):  # ExecutionResult对象
-                status = "成功" if last_result.success else "失败"
-                command = getattr(last_result, 'command', '')
-                output = getattr(last_result, 'output', str(getattr(last_result, 'stdout', '')))
-            elif isinstance(last_result, dict):  # 字典格式
-                status = "成功" if last_result.get('returncode', 0) == 0 else "失败"
-                command = last_result.get('command', '')
-                output = last_result.get('output', str(last_result.get('stdout', '')))
-            else:  # 其他情况
-                status = "未知"
-                command = str(last_result)
-                output = str(last_result)
-            
-            desc += f"- 上一步结果: {status}\n"
-            desc += f"- 上一条命令: {command[:200] if command else ''}\n"
-            if output:
-                # 添加输出摘要
-                output_summary = output[:100] + "..." if len(str(output)) > 100 else str(output)
-                desc += f"- 输出摘要: {output_summary}\n"
-        else:
-            desc += "- 上一步结果: 无（这是第一步）\n"
         
         return desc
     
@@ -221,14 +208,14 @@ class SkillSelector:
             else:
                 # Fallback
                 return {
-                    "selected_skill": "LLMSkill",
+                    "selected_skill": "CommandSkill",
                     "confidence": 0.8,
                     "reasoning": "LLM客户端不可用，使用默认技能"
                 }
                 
         except Exception as e:
             return {
-                "selected_skill": "LLMSkill",
+                "selected_skill": "CommandSkill",
                 "confidence": 0.5,
                 "reasoning": f"LLM调用失败: {str(e)}，使用默认技能"
             }

@@ -2,7 +2,9 @@
 
 from typing import Optional, List, Dict, Any
 import time
-from .base_skill import BaseSkill, SkillCapability, SkillResponse
+
+from loguru import logger
+from .base_skill import BaseSkill, SkillCapability, SkillExecutionResponse
 from ..llm.openai_client import OpenAIClient
 import json
 import tempfile
@@ -60,10 +62,9 @@ class BrowserSkill(BaseSkill):
 - 上一步执行结果：包含上一步操作的执行结果和输出信息
 
 **导航操作最佳实践：**
-- 使用 `page.go_back(timeout=30000)` 带超时参数，避免在没有历史记录时无限等待
-- 使用 `page.go_forward(timeout=30000)` 带超时参数
-- 使用 `page.goto(url, timeout=30000)` 带超时参数
-- 使用 `page.wait_for_load_state('networkidle', timeout=30000)` 带超时参数
+- 使用 `page.go_back(wait_until='networkidle', timeout=5000)` 带超时参数和 wait_until，避免在没有历史记录时无限等待
+- 使用 `page.go_forward(wait_until='networkidle', timeout=5000)` 带超时参数和 wait_until
+- 使用 `page.goto(url, wait_until='networkidle', timeout=5000)` 带超时参数和 wait_until
 
 **持久化浏览器会话机制：**
 - **真正的持久化**：浏览器在整个任务期间保持打开，不会每步都重启
@@ -95,10 +96,17 @@ try:
     time.sleep(random.uniform(0.5, 1))
     
     # 你的操作代码
-    # 对于导航操作（如 go_back, goto, go_forward），使用超时控制
-    # 例如：page.go_back(timeout=30000) 或 page.goto(url, timeout=30000)
-    page.goto('https://example.com')
-    page.wait_for_load_state('networkidle', timeout=30000)
+    # 对于导航操作（如 go_back, goto, go_forward），使用超时控制和 wait_until
+    # 重要：使用 try-except 处理可能的超时异常
+    try:
+        page.goto('https://example.com', wait_until='networkidle', timeout=5000)
+    except Exception as nav_error:
+        print(f'导航失败: {nav_error}')
+        # 如果是 go_back 超时，可以检查当前页面是否已经是期望页面
+        if 'arxiv.org/list' in page.url:
+            print('已在目标页面，无需返回')
+        else:
+            print('尝试其他导航方法')
     
     # 输出信息
     print(f'当前URL: {page.url}')
@@ -108,66 +116,44 @@ except Exception as e:
     print(f'操作失败: {e}')
     # 不要关闭浏览器，让系统决定何时关闭
 
-# 不要调用 browser.close() 或 skill.cleanup_browser()
-# 浏览器会在任务完成时自动关闭
+# **重要：不要调用 browser.close()、skill.cleanup_browser() 或 playwright.stop()！**
+# 浏览器会在任务完成时由系统自动关闭
 
-# 注意：对于导航操作，始终使用超时参数，例如：
-# page.go_back(timeout=30000)  # 返回上一页，30秒超时
-# page.go_forward(timeout=30000)  # 前进到下一页，30秒超时
-```
-
-**最后一步（任务完成）时的模板：**
-```
-import os
-import sys
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-from ask_shell.skills.browser_skill import BrowserSkill
-import time
-import random
-
-skill = BrowserSkill()
-page = skill.get_or_create_browser()
-
-try:
-    # 执行最后的操作
-    page.screenshot(path='final_screenshot.png')
-    print(f'截图已保存: final_screenshot.png')
-    print(f'当前URL: {page.url}')
-    print(f'页面标题: {page.title()}')
-    
-    # 标记任务完成，触发浏览器清理
-    skill.cleanup_browser()
-    print('✅ 浏览器已关闭')
-    
-except Exception as e:
-    print(f'操作失败: {e}')
-    skill.cleanup_browser()  # 异常时也要清理
+# 注意：对于导航操作，始终使用超时参数和 wait_until，例如：
+# page.go_back(wait_until='networkidle', timeout=5000)  # 返回上一页，5秒超时
+# page.go_forward(wait_until='networkidle', timeout=5000)  # 前进到下一页，5秒超时
 ```
 
 **关键注意事项：**
 1. 必须使用 BrowserSkill.get_or_create_browser() 获取浏览器实例
-2. 不要手动关闭浏览器，除非任务完成
+2. **重要：绝对不要生成关闭浏览器的代码！** 浏览器将在任务结束后由系统自动清理
 3. 模拟人类行为（随机延迟、慢速输入）
 4. 使用智能定位器（多个选择器、.first、.visible）
 5. 包含 try-except 错误处理
-6. 输出有用信息（截图路径、URL、标题）
-7. 每次只执行 1-2 个关键步骤，不要贪多
-8. **重要**：任务完成时调用 skill.cleanup_browser() 关闭浏览器
-9. 如果是最后一步，is_complete 设为 true
-10. 如果需要继续，is_complete 设为 false，并说明 next_action
-11. **重要**：利用上下文中的浏览器操作历史和当前页面信息来生成有针对性的代码
-12. **重要**：对导航操作（如 go_back, go_forward, goto）使用超时参数，避免无限等待
+6. 对导航操作（go_back, goto, go_forward）特别注意超时处理
+7. 输出有用信息（截图路径、URL、标题）
+8. 每次只执行 1-2 个关键步骤，不要贪多
+9. **重要：绝对禁止** 调用 skill.cleanup_browser()、browser.close()、context.close()、playwright.stop() 或任何可能导致浏览器关闭的方法
+10. 即使任务完成，也不要关闭浏览器 - 系统将在所有任务结束后自动清理
+11. 如果需要继续，只需说明 next_action
+12. **重要**：利用上下文中的浏览器操作历史和当前页面信息来生成有针对性的代码
+13. **重要**：对导航操作（如 go_back, go_forward, goto）使用超时参数和 wait_until，避免无限等待
+            
+重要：对于信息提取任务，务必在代码中将提取的有用信息打印到控制台，这些信息将被捕获传递给后续LLM技能进行处理
+注意：浏览器技能主要负责信息收集，分析和总结由LLM技能完成
+
+**信息提取指导：**
+- 从网页中提取关键数据、文本内容、链接等有用信息
+- 将提取的信息打印到控制台以便捕获
 
 **响应格式（必须返回 JSON）：**
 {
   "thinking": "分析当前任务，决定第一步操作",
   "code": "Python代码（完整可执行的代码）",
   "explanation": "解释这一步要做什么",
-  "is_complete": false,
   "is_dangerous": false,
   "danger_reason": "",
-  "next_action": "描述下一步计划（如果is_complete=false）"
+  "next_action": "描述下一步计划"
 }"""
 
     
@@ -851,6 +837,9 @@ except Exception as e:
     @classmethod
     def get_current_page_structure(cls) -> str:
         """Get the current page structure (HTML content and elements)"""
+
+        cls._try_connect_to_existing_browser()
+
         if cls._browser_page:
             try:
                 # Get page title
@@ -866,12 +855,12 @@ except Exception as e:
                 body_text = cls._browser_page.text_content('body')
                 
                 # Limit content size to avoid overwhelming the LLM
-                max_content_size = 2000
+                max_content_size = 4096
                 if len(html_content) > max_content_size:
-                    html_content = html_content[:max_content_size] + "...(truncated)"
+                    html_content = html_content[:max_content_size].replace('\n', ' ') + "...(truncated)"
                 
                 if len(body_text) > max_content_size:
-                    body_text = body_text[:max_content_size] + "...(truncated)"
+                    body_text = body_text[:max_content_size].replace('\n', ' ') + "...(truncated)"
                 
                 structure_info = f"""=== 当前页面信息 ===
 URL: {url}
@@ -913,7 +902,7 @@ URL: {url}
         context: Optional[Dict[str, Any]] = None,
         stream_callback=None,
         **kwargs
-    ) -> SkillResponse:
+    ) -> SkillExecutionResponse:
         """
         Execute browser automation task
         
@@ -921,11 +910,14 @@ URL: {url}
             task: User's browser automation request
             context: Execution context (history, last result, etc.)
             stream_callback: Callback for streaming output
-            **kwargs: Additional parameters
+            **kwargs: Additional parameters including selection_reasoning
             
         Returns:
-            SkillResponse with generated Playwright code
+            SkillExecutionResponse with generated Playwright code
         """
+        # Get the reasoning for why this skill was selected (though browser skill doesn't modify its behavior based on this)
+        selection_reasoning = kwargs.get('selection_reasoning', '')
+        
         # Build context information
         context_info = self._build_context_info(context)
         
@@ -935,7 +927,8 @@ URL: {url}
 {context_info}
 
 请生成 Playwright 代码来完成这个浏览器操作任务。"""
-        
+        logger.info(f"Browser Skill System Prompt: {self.SYSTEM_PROMPT}")
+        logger.info(f"Browser Skill User Message: {user_message}") 
         # Call LLM to generate browser automation code
         try:
             response_text = self.llm.chat(
@@ -948,11 +941,9 @@ URL: {url}
             
             # Debug: print response if empty
             if not response_text or not response_text.strip():
-                return SkillResponse(
-                    skill_name=self.name,
+                return SkillExecutionResponse(
                     thinking="LLM返回了空响应",
-                    direct_response="错误：LLM未能生成浏览器自动化代码",
-                    is_complete=True
+                    direct_response="错误：LLM未能生成浏览器自动化代码"
                 )
             
             # Parse LLM response
@@ -964,25 +955,22 @@ URL: {url}
             code = response_data.get("code", "").strip()
             if not code:
                 # print(f"[DEBUG] No code generated! Response data: {response_data}")  # 仅在调试时启用
-                return SkillResponse(
-                    skill_name=self.name,
+                return SkillExecutionResponse(
                     thinking=response_data.get("thinking", "未生成代码"),
-                    direct_response=f"错误：未能生成可执行代码。LLM响应: {response_data.get('explanation', '无说明')}",
-                    is_complete=True
+                    direct_response=f"错误：未能生成可执行代码。LLM响应: {response_data.get('explanation', '无说明')}"
                 )
             
             # Record the operation in history
             explanation = response_data.get("explanation", "未知操作")
             # Include a summary of the code being executed
-            code_summary = code[:100].replace('\n', ' ') + ('...' if len(code) > 100 else '')
+            code_summary = code[:1024].replace('\n', ' ') + ('...' if len(code) > 1024 else '')
             operation_desc = f"{explanation} - 代码: {code_summary}"
             self.add_operation_to_history(operation_desc)
             
             # Generate command to execute the code
             command = self._generate_execution_command(code)
             
-            # 是否需要LLM处理由skill selector根据任务执行状态智能判断，不需要在这里进行关键词匹配
-            needs_llm_processing = False
+            
             
             # 修改生成的代码，将截图和其他文件保存到 /tmp 目录
             import re
@@ -1012,38 +1000,31 @@ URL: {url}
             # 重新生成执行命令
             command = self._generate_execution_command(code)
             
-            # Check if this is the final step and if we should clean up the browser
-            is_complete = response_data.get("is_complete", True)
-            
-            # Create the response
-            response = SkillResponse(
-                skill_name=self.name,
+            # Create the response - individual skills no longer decide task completion
+            # The skill selector will determine if the overall task is complete
+            response = SkillExecutionResponse(
                 thinking=response_data.get("thinking", ""),
                 command=command,
                 explanation=response_data.get("explanation", ""),
                 is_dangerous=response_data.get("is_dangerous", False),
                 danger_reason=response_data.get("danger_reason", ""),
-                is_complete=is_complete,
-                needs_llm_processing=needs_llm_processing
+                # Don't set task_complete here - skill selector will decide
             )
             
-            # If this is the final step, schedule browser cleanup
-            if is_complete:
-                # Note: We can't call cleanup_browser() directly here because the command
-                # will be executed separately. The actual cleanup needs to happen elsewhere.
-                # The agent should handle cleanup when the skill chain completes.
-                pass
-
+            # Note: Browser cleanup will be handled by the agent when the overall task is complete
+            # The skill selector determines overall task completion, not individual skills
+            # Note: We can't call cleanup_browser() directly here because the command
+            # will be executed separately. The actual cleanup needs to happen elsewhere.
+            # The agent should handle cleanup when the skill chain completes.
+            
             return response
                 
         except Exception as e:
             import traceback
             error_details = traceback.format_exc()
-            return SkillResponse(
-                skill_name=self.name,
+            return SkillExecutionResponse(
                 thinking=f"生成浏览器自动化代码失败: {str(e)}",
-                direct_response=f"错误: {str(e)}\n\n详细信息：\n{error_details}",
-                is_complete=True
+                direct_response=f"错误: {str(e)}\n\n详细信息：\n{error_details}"
             )
     
     def _build_context_info(self, context: Optional[Dict[str, Any]]) -> str:
@@ -1083,23 +1064,23 @@ URL: {url}
             # Extract useful information from output
             if result.stdout:
                 output = result.stdout.strip()
-                
+                                
                 # Look for screenshot paths
                 import re
                 screenshot_match = re.search(r'截图已保存: ([^\n]+)', output)
                 if screenshot_match:
                     info_parts.append(f"📸 截图: {screenshot_match.group(1)}")
-                
+                                
                 # Look for URLs
                 url_match = re.search(r'当前URL: ([^\n]+)', output)
                 if url_match:
                     info_parts.append(f"🌐 当前URL: {url_match.group(1)}")
-                
+                                
                 # Look for page titles
                 title_match = re.search(r'页面标题: ([^\n]+)', output)
                 if title_match:
                     info_parts.append(f"📝 页面标题: {title_match.group(1)}")
-                
+                                
                 # Show first 500 chars of output
                 info_parts.append(f"\n输出信息:\n{output[:500]}")
                 if len(output) > 500:
@@ -1145,7 +1126,6 @@ URL: {url}
                     "thinking": "从响应中提取了代码",
                     "code": code,
                     "explanation": "使用 Playwright 执行浏览器操作",
-                    "is_complete": True,
                     "is_dangerous": False
                 }
             
@@ -1154,7 +1134,6 @@ URL: {url}
                 "thinking": f"无法解析LLM响应: {str(e)}",
                 "code": "",
                 "explanation": f"解析错误，原始响应: {response_text[:200]}",
-                "is_complete": True,
                 "is_dangerous": False
             }
     

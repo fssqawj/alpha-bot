@@ -4,21 +4,22 @@ This module provides a flexible skill system that allows the agent to have
 various capabilities beyond just shell command generation.
 """
 
-from .base_skill import BaseSkill, SkillResponse, SkillCapability
+from .base_skill import BaseSkill, SkillCapability
 from .skill_manager import SkillManager
 from .skill_selector import SkillSelector
-from .llm_skill import LLMSkill
+from .command_skill import CommandSkill
+from .direct_llm_skill import DirectLLMSkill
 from .ppt_skill import PPTSkill
 from .image_skill import ImageSkill
 from .browser_skill import BrowserSkill
 
 __all__ = [
     'BaseSkill', 
-    'SkillResponse', 
     'SkillCapability', 
     'SkillManager',
     'SkillSelector',
-    'LLMSkill',
+    'CommandSkill',
+    'DirectLLMSkill',
     'PPTSkill',
     'ImageSkill',
     'BrowserSkill'

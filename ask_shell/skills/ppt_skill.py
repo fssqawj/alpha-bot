@@ -1,7 +1,7 @@
 """PPT Generation Skill - Create PowerPoint presentations"""
 
 from typing import List, Optional, Dict, Any
-from .base_skill import BaseSkill, SkillResponse, SkillCapability
+from .base_skill import BaseSkill, SkillExecutionResponse, SkillCapability
 
 
 class PPTSkill(BaseSkill):
@@ -36,26 +36,27 @@ class PPTSkill(BaseSkill):
         task: str,
         context: Optional[Dict[str, Any]] = None,
         **kwargs
-    ) -> SkillResponse:
+    ) -> SkillExecutionResponse:
         """
         Execute PPT generation
-        
+            
         Args:
             task: Task description (e.g., "create a PPT about AI")
             context: Execution context
-            **kwargs: Additional parameters (template, theme, etc.)
+            **kwargs: Additional parameters including selection_reasoning
             
         Returns:
-            SkillResponse with generated file path
+            SkillExecutionResponse with generated file path
         """
+        # Get the reasoning for why this skill was selected (though ppt skill doesn't modify its behavior based on this)
+        selection_reasoning = kwargs.get('selection_reasoning', '')
+            
         # TODO: Implement actual PPT generation
         # This is a placeholder implementation
         
-        return SkillResponse(
-            skill_name=self.name,
+        return SkillExecutionResponse(
             thinking="PPT generation requested. This is a placeholder - implement with python-pptx or similar library.",
-            is_complete=True,
-            direct_response="[Placeholder] PPT Skill not yet fully implemented.\n\nTo use this skill:\n1. Install python-pptx: pip install python-pptx\n2. Implement the generation logic in this file\n3. Configure templates and themes\n\nExample implementation would:\n- Parse task to extract topic and outline\n- Create slides with title, content, images\n- Save as .pptx file\n- Return file path in generated_files",
+            direct_response="[Placeholder] PPT Skill not yet implemented.\n\nTo use this skill:\n1. Install python-pptx: pip install python-pptx\n2. Implement the generation logic in this file\n3. Configure templates and themes\n\nExample implementation would:\n- Parse task to extract topic and outline\n- Create slides with title, content, images\n- Save as .pptx file\n- Return file path in generated_files",
             generated_files=[],  # Would be ["output.pptx"] after implementation
             file_metadata={
                 "status": "not_implemented",

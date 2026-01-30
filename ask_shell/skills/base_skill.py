@@ -5,77 +5,7 @@ from dataclasses import dataclass
 from typing import Optional, List, Dict, Any
 from enum import Enum
 
-
-class SkillCapability(Enum):
-    """Types of capabilities a skill can provide"""
-    COMMAND_GENERATION = "command_generation"  # Generate and execute shell commands
-    LLM_PROCESSING = "llm_processing"  # Process content with LLM (translate, summarize, etc.)
-    FILE_GENERATION = "file_generation"  # Generate files (PPT, images, videos, etc.)
-    WEB_INTERACTION = "web_interaction"  # Interact with web services/APIs
-    DATA_ANALYSIS = "data_analysis"  # Analyze and visualize data
-
-
-@dataclass
-class SkillResponse:
-    """
-    Unified response format for all skills
-    
-    This replaces the old LLMResponse and provides a common interface
-    for all skill types.
-    """
-    # Core fields
-    skill_name: str  # Which skill generated this response
-    thinking: str = ""  # Reasoning process
-    is_complete: bool = False  # Whether the task is finished
-    
-    # Command execution fields (for command generation skills)
-    command: str = ""  # Shell command to execute
-    explanation: str = ""  # Command explanation
-    next_step: str = ""  # Next planned step
-    is_dangerous: bool = False  # Safety flag
-    danger_reason: str = ""  # Danger explanation
-    error_analysis: str = ""  # Error analysis if previous command failed
-    
-    # Direct response fields (for LLM/content processing skills)
-    direct_response: str = ""  # Direct content output
-    needs_llm_processing: bool = False  # Whether next step needs LLM
-    
-    # File generation fields (for file creation skills)
-    generated_files: List[str] = None  # Paths to generated files
-    file_metadata: Dict[str, Any] = None  # Additional file information
-    
-    # API/Service fields (for external service skills)
-    api_response: Dict[str, Any] = None  # Response from external APIs
-    service_status: str = ""  # Status of service interaction
-    
-    def __post_init__(self):
-        if self.generated_files is None:
-            self.generated_files = []
-        if self.file_metadata is None:
-            self.file_metadata = {}
-        if self.api_response is None:
-            self.api_response = {}
-    
-    @classmethod
-    def from_dict(cls, data: dict) -> "SkillResponse":
-        """Create SkillResponse from dictionary"""
-        return cls(
-            skill_name=data.get("skill_name", "unknown"),
-            thinking=data.get("thinking", ""),
-            is_complete=data.get("is_complete", False),
-            command=data.get("command", ""),
-            explanation=data.get("explanation", ""),
-            next_step=data.get("next_step", ""),
-            is_dangerous=data.get("is_dangerous", False),
-            danger_reason=data.get("danger_reason", ""),
-            error_analysis=data.get("error_analysis", ""),
-            direct_response=data.get("direct_response", ""),
-            needs_llm_processing=data.get("needs_llm_processing", False),
-            generated_files=data.get("generated_files", []),
-            file_metadata=data.get("file_metadata", {}),
-            api_response=data.get("api_response", {}),
-            service_status=data.get("service_status", "")
-        )
+from ask_shell.models.types import SkillExecutionResponse, SkillCapability
 
 
 class BaseSkill(ABC):
@@ -106,7 +36,7 @@ class BaseSkill(ABC):
         task: str,
         context: Optional[Dict[str, Any]] = None,
         **kwargs
-    ) -> SkillResponse:
+    ) -> SkillExecutionResponse:
         """
         Execute the skill to accomplish the task
         
@@ -116,7 +46,7 @@ class BaseSkill(ABC):
             **kwargs: Additional skill-specific parameters
             
         Returns:
-            SkillResponse with the result
+            SkillExecutionResponse with the result
         """
         pass
     

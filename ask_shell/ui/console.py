@@ -61,8 +61,8 @@ class ConsoleUI:
                 self.next_step = ""
                 self.error_analysis = ""
                 self.direct_response = ""
-                self.needs_llm_processing = False
-                
+                self.code = ""
+                                
                 # 记录每个字段当前已显示的长度
                 self.thinking_displayed = 0
                 self.command_displayed = 0
@@ -70,6 +70,7 @@ class ConsoleUI:
                 self.next_step_displayed = 0
                 self.error_analysis_displayed = 0
                 self.direct_response_displayed = 0
+                self.code_displayed = 0
             
             def add_token(self, token: str):
                 """添加新的 token 并实时提取字段内容"""
@@ -114,10 +115,13 @@ class ConsoleUI:
                     raw_content = direct_response_match.group(1)
                     self.direct_response = raw_content.replace('\\n', '\n').replace('\\"', '"').replace('\\\\', '\\')
                 
-                # 提取 needs_llm_processing 字段
-                needs_llm_match = re.search(r'"needs_llm_processing"\s*:\s*(true|false)', self.buffer)
-                if needs_llm_match:
-                    self.needs_llm_processing = needs_llm_match.group(1) == 'true'
+                # 提取 code 字段
+                code_match = re.search(r'"code"\s*:\s*"((?:[^"\\]|\\.)*)', self.buffer)
+                if code_match:
+                    raw_content = code_match.group(1)
+                    self.code = raw_content.replace('\\n', '\n').replace('\\"', '"').replace('\\\\', '\\')
+                
+
             
             def get_display(self):
                 """获取显示内容 - 只显示新增的内容"""
@@ -151,7 +155,15 @@ class ConsoleUI:
                         border_style="green",
                         padding=(0, 1)
                     ))
-                
+
+                if self.code:
+                    panels.append(Panel(
+                        Syntax(self.code, "python", theme="monokai", line_numbers=True, word_wrap=True),
+                        title="[bold purple]✨ 生成的代码[/bold purple]",
+                        border_style="purple",
+                        padding=(0, 1)
+                    ))
+
                 # 说明 - 实时显示
                 if self.explanation:
                     panels.append(f"[dim]💬 说明: {self.explanation}[/dim]")
@@ -182,7 +194,7 @@ class ConsoleUI:
         
         content = StreamingContent()
         
-        with Live(content.get_display(), console=self.console, refresh_per_second=30) as live:
+        with Live(content.get_display(), console=self.console, refresh_per_second=10, screen=False) as live:
             def update_callback(token: str):
                 content.add_token(token)
                 live.update(content.get_display())

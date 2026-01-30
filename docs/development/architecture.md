@@ -101,7 +101,7 @@ while not task_complete:
             continue
     result = executor.execute(command)
     context.add(result)
-    task_complete = llm.is_complete(task, context)
+    task_complete = skill_selector.is_task_complete(task, context)
 ```
 
 ### 3. LLM Layer
