@@ -1,5 +1,6 @@
 """Command Generation Skill - Generate shell commands with LLM"""
 
+import json
 from typing import List, Optional, Dict, Any, Callable
 from .base_skill import BaseSkill, SkillExecutionResponse, SkillCapability
 from ..llm.base import BaseLLMClient
@@ -111,20 +112,47 @@ class CommandSkill(BaseSkill):
         # Set LLM to command mode
         self.llm.set_direct_mode(False)
             
-        # Call LLM to generate response
+        # Call LLM to generate response with direct parsing using CommandSkillResponse dataclass
         try:
-            llm_response = self.llm.generate(task, last_result, stream_callback, history=history)
-                
-            # Convert LLMResponse to SkillExecutionResponse
+            from ..models.types import CommandSkillResponse
+            # Generate and directly parse into CommandSkillResponse
+            llm_response = self.llm.generate(task, last_result, stream_callback, history=history, response_class=CommandSkillResponse)
+            
+            # If the response is already parsed (when response_class is provided), use it directly
+            if hasattr(llm_response, 'command'):  # It's already a CommandSkillResponse object
+                parsed_response = llm_response
+            else:
+                # Fallback to raw JSON parsing if needed
+                import json
+                try:
+                    parsed_data = json.loads(llm_response.raw_json)
+                    # Create CommandSkillResponse manually
+                    parsed_response = CommandSkillResponse(
+                        thinking=parsed_data.get("thinking", ""),
+                        command=parsed_data.get("command", ""),
+                        explanation=parsed_data.get("explanation", ""),
+                        next_step=parsed_data.get("next_step", ""),
+                        error_analysis=parsed_data.get("error_analysis", ""),
+                        is_dangerous=parsed_data.get("is_dangerous", False),
+                        danger_reason=parsed_data.get("danger_reason", ""),
+                        direct_response=parsed_data.get("direct_response", "")
+                    )
+                except json.JSONDecodeError:
+                    return SkillExecutionResponse(
+                        thinking="Failed to parse LLM response as JSON",
+                        direct_response=f"Error: Invalid JSON response from LLM: {llm_response.raw_json if hasattr(llm_response, 'raw_json') else str(llm_response)}"
+                    )
+            
+            # Convert to SkillExecutionResponse
             # Individual skills no longer decide task completion - that's handled by the skill selector
             return SkillExecutionResponse(
-                thinking=llm_response.thinking,
-                command=llm_response.command,
-                explanation=llm_response.explanation,
-                next_step=llm_response.next_step,
-                is_dangerous=llm_response.is_dangerous,
-                danger_reason=llm_response.danger_reason,
-                error_analysis=llm_response.error_analysis,
+                thinking=parsed_response.thinking,
+                command=parsed_response.command,
+                explanation=parsed_response.explanation,
+                next_step=parsed_response.next_step,
+                is_dangerous=parsed_response.is_dangerous,
+                danger_reason=parsed_response.danger_reason,
+                error_analysis=parsed_response.error_analysis,
                 # Don't set task_complete here - skill selector will decide
             )
         except Exception as e:

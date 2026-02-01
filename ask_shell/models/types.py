@@ -31,6 +31,35 @@ class SkillSelectResponse:
     task_complete: Optional[bool] = None  # Whether the overall task is complete (determined by skill selector)
 
 
+# Define dataclasses for LLM responses based on prompt schemas
+@dataclass
+class CommandSkillResponse:
+    """Dataclass for CommandSkill LLM response - matches the JSON schema expected by the prompt"""
+    thinking: str = ""
+    command: str = ""
+    explanation: str = ""
+    next_step: str = ""
+    error_analysis: str = ""
+    is_dangerous: bool = False
+    danger_reason: str = ""
+    direct_response: str = ""  # For AI processing mode
+
+@dataclass
+class DirectLLMSkillResponse:
+    """Dataclass for DirectLLMSkill LLM response - matches the JSON schema expected by the prompt"""
+    thinking: str = ""
+    direct_response: str = ""
+
+@dataclass
+class PPTSkillResponse:
+    """Dataclass for PPTSkill LLM response - matches the JSON schema expected by the prompt"""
+    title: str = ""
+    outline: List[Dict[str, Any]] = None
+
+    def __post_init__(self):
+        if self.outline is None:
+            self.outline = []
+
 @dataclass
 class SkillExecutionResponse:
     thinking: str = ""  # Reasoning process
@@ -113,32 +142,12 @@ class ExecutionResult:
 
 @dataclass
 class LLMResponse:
-    """LLM 响应结构"""
-    thinking: str = ""
-    command: str = ""
-    explanation: str = ""
-    next_step: str = ""
-    error_analysis: str = ""
-    is_dangerous: bool = False  # 是否为危险操作
-    danger_reason: str = ""     # 危险原因说明
-    is_direct_mode: bool = False  # 是否为直接LLM模式（非命令模式）
-    direct_response: str = ""   # 直接LLM响应内容（用于翻译、总结、分析等任务）
-
+    """LLM 响应结构 - 保留用于向后兼容，但主要使用 raw_json 字段"""
+    raw_json: str = ""  # Raw JSON response from LLM
     
     @classmethod
-    def from_dict(cls, data: dict) -> "LLMResponse":
-        return cls(
-            thinking=data.get("thinking", ""),
-            command=data.get("command", ""),
-            explanation=data.get("explanation", ""),
-            next_step=data.get("next_step", ""),
-            error_analysis=data.get("error_analysis", ""),
-            is_dangerous=data.get("is_dangerous", False),
-            danger_reason=data.get("danger_reason", ""),
-            is_direct_mode=data.get("is_direct_mode", False),
-            direct_response=data.get("direct_response", ""),
-
-        )
+    def from_json(cls, json_str: str) -> "LLMResponse":
+        return cls(raw_json=json_str)
 
 
 @dataclass

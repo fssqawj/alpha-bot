@@ -1,5 +1,6 @@
 """Direct LLM Processing Skill - Direct content processing with LLM"""
 
+import json
 from typing import List, Optional, Dict, Any, Callable
 from .base_skill import BaseSkill, SkillExecutionResponse, SkillCapability
 from ..llm.base import BaseLLMClient
@@ -89,15 +90,36 @@ class DirectLLMSkill(BaseSkill):
         # Set LLM to direct mode
         self.llm.set_direct_mode(True)
             
-        # Call LLM to generate response
+        # Call LLM to generate response with direct parsing using DirectLLMSkillResponse dataclass
         try:
-            llm_response = self.llm.generate(task, last_result, stream_callback, history=history)
-                
+            from ..models.types import DirectLLMSkillResponse
+            # Generate and directly parse into DirectLLMSkillResponse
+            llm_response = self.llm.generate(task, last_result, stream_callback, history=history, response_class=DirectLLMSkillResponse)
+            
+            # If the response is already parsed (when response_class is provided), use it directly
+            if hasattr(llm_response, 'direct_response'):  # It's already a DirectLLMSkillResponse object
+                parsed_response = llm_response
+            else:
+                # Fallback to raw JSON parsing if needed
+                import json
+                try:
+                    parsed_data = json.loads(llm_response.raw_json)
+                    # Create DirectLLMSkillResponse manually
+                    parsed_response = DirectLLMSkillResponse(
+                        thinking=parsed_data.get("thinking", ""),
+                        direct_response=parsed_data.get("direct_response", "")
+                    )
+                except json.JSONDecodeError:
+                    return SkillExecutionResponse(
+                        thinking="Failed to parse LLM response as JSON",
+                        direct_response=f"Error: Invalid JSON response from LLM: {llm_response.raw_json if hasattr(llm_response, 'raw_json') else str(llm_response)}"
+                    )
+            
             # Convert LLMResponse to SkillExecutionResponse
             # Individual skills no longer decide task completion - that's handled by the skill selector
             return SkillExecutionResponse(
-                thinking=llm_response.thinking,
-                direct_response=llm_response.direct_response,
+                thinking=parsed_response.thinking,
+                direct_response=parsed_response.direct_response,
                 # Don't set task_complete here - skill selector will decide
             )
         except Exception as e:

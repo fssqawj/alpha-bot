@@ -62,7 +62,7 @@ class BaseLLMClient(ABC):
         return f"请帮我完成以下任务: {task}"
     
     @abstractmethod
-    def generate(self, user_input: str, last_result: Optional[ExecutionResult] = None, stream_callback: Optional[Callable[[str], None]] = None, history: Optional[List[ExecutionResult]] = None) -> LLMResponse:
+    def generate(self, user_input: str, last_result: Optional[ExecutionResult] = None, stream_callback: Optional[Callable[[str], None]] = None, history: Optional[List[ExecutionResult]] = None, response_class=None):
         """
         生成下一步命令
         
@@ -70,8 +70,10 @@ class BaseLLMClient(ABC):
             user_input: 用户输入的任务描述
             last_result: 上一次命令执行的结果
             stream_callback: 流式输出回调函数
+            history: 历史执行结果列表
+            response_class: 响应类，用于直接解析JSON到指定类型
             
         Returns:
-            LLMResponse: LLM 响应
+            如果提供了response_class，则返回解析后的对象；否则返回LLMResponse
         """
         pass

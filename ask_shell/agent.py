@@ -145,6 +145,7 @@ class AskShell:
             if task_complete and not command:
                 context.status = TaskStatus.COMPLETED
                 self.ui.print_complete()
+                self.skill_manager.reset_all()
                 break
             
             # 如果没有命令，跳过

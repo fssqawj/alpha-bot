@@ -145,6 +145,9 @@ except Exception as e:
 **信息提取指导：**
 - 从网页中提取关键数据、文本内容、链接等有用信息
 - 将提取的信息打印到控制台以便捕获
+- **关键：必须将完整信息打印到控制台，不要截断或省略任何信息**
+- **完整信息打印：将所有相关数据以结构化格式完整输出到控制台，确保后续步骤可以访问全部信息**
+- **控制台输出要求：对于数据提取任务，应将完整的表格数据、列表、文本内容等以易于解析的格式输出**
 
 **响应格式（必须返回 JSON）：**
 {
@@ -854,13 +857,8 @@ except Exception as e:
                 # Get visible text content
                 body_text = cls._browser_page.text_content('body')
                 
-                # Limit content size to avoid overwhelming the LLM
-                max_content_size = 4096
-                if len(html_content) > max_content_size:
-                    html_content = html_content[:max_content_size].replace('\n', ' ') + "...(truncated)"
-                
-                if len(body_text) > max_content_size:
-                    body_text = body_text[:max_content_size].replace('\n', ' ') + "...(truncated)"
+                # Show all content without truncation - critical for information processing in subsequent steps
+                # No content size limiting to ensure complete information is available for processing
                 
                 structure_info = f"""=== 当前页面信息 ===
 URL: {url}
@@ -1081,10 +1079,8 @@ URL: {url}
                 if title_match:
                     info_parts.append(f"📝 页面标题: {title_match.group(1)}")
                                 
-                # Show first 500 chars of output
-                info_parts.append(f"\n输出信息:\n{output[:500]}")
-                if len(output) > 500:
-                    info_parts.append("...(truncated)")
+                # Show all output without truncation - critical for information processing in subsequent steps
+                info_parts.append(f"\n输出信息:\n{output}")
             
             if result.stderr:
                 error_msg = result.stderr.strip()[:300]

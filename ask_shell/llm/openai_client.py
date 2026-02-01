@@ -31,8 +31,9 @@ class OpenAIClient(BaseLLMClient):
         user_input: str, 
         last_result: Optional[ExecutionResult] = None,
         stream_callback: Optional[Callable[[str], None]] = None,
-        history: Optional[List[ExecutionResult]] = None
-    ) -> LLMResponse:
+        history: Optional[List[ExecutionResult]] = None,
+        response_class=None
+    ):
         """
         生成下一步命令
         
@@ -41,6 +42,7 @@ class OpenAIClient(BaseLLMClient):
             last_result: 上一次命令执行的结果
             stream_callback: 流式输出回调函数，接收每个 token
             history: 历史执行结果列表
+            response_class: 响应类，用于直接解析JSON到指定类型
         """
         # 构建 messages from scratch for each call
         messages = [
@@ -63,16 +65,28 @@ class OpenAIClient(BaseLLMClient):
         else:
             response_text = self._generate_without_stream(messages)
         
-        # 解析响应
-        try:
-            data = json.loads(response_text)
-            return LLMResponse.from_dict(data)
-        except json.JSONDecodeError:
-            return LLMResponse(
-                thinking="无法解析 LLM 响应",
-                command="",
-                explanation=response_text
-            )
+        # 如果指定了响应类，则直接解析并返回对象
+        if response_class is not None:
+            import json
+            try:
+                parsed_data = json.loads(response_text)
+                # Handle both dict instantiation and from_dict/from_json methods
+                if hasattr(response_class, 'from_dict'):
+                    return response_class.from_dict(parsed_data)
+                elif hasattr(response_class, 'from_json'):
+                    return response_class.from_json(response_text)
+                else:
+                    # Assume it's a dataclass or simple class that accepts kwargs
+                    return response_class(**parsed_data)
+            except json.JSONDecodeError:
+                # If parsing fails, return error response
+                if hasattr(response_class, 'from_dict'):
+                    return response_class.from_dict({"thinking": "Failed to parse LLM response as JSON", "direct_response": f"Error: Invalid JSON response from LLM: {response_text}"})
+                else:
+                    return response_class(thinking="Failed to parse LLM response as JSON", direct_response=f"Error: Invalid JSON response from LLM: {response_text}")
+        
+        # 否则返回原始的 LLMResponse
+        return LLMResponse.from_json(response_text)
     
     def _generate_with_stream(self, messages, callback: Callable[[str], None]) -> str:
         """使用流式输出生成响应"""
