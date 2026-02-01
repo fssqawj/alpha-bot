@@ -129,12 +129,14 @@ class OpenAIClient(BaseLLMClient):
             history_str += f"\n第{idx}步 - 命令执行{status}：\n"
             history_str += f"技能选择: {result.skill_response.skill_name}\n"
             history_str += f"技能选择原因: {result.skill_response.select_reason}\n"
-            history_str += f"技能执行思考过程: {result.skill_response.thinking}\n"
-            history_str += f"下一步计划: {result.skill_response.next_step}\n"
+            if result.skill_response.thinking:
+                history_str += f"技能执行思考过程: {result.skill_response.thinking}\n"
+            if result.skill_response.next_step:
+                history_str += f"下一步计划: {result.skill_response.next_step}\n"
             if result.command:   
                 history_str += f"执行命令: {result.command}\n"
                 history_str += f"返回码: {result.returncode}\n"
-                history_str += f"命令输出:\n{output[:2048]}\n"
+                history_str += f"命令输出:\n{output}\n"
             if result.skill_response.direct_response:
                 history_str += f"直接响应: {result.skill_response.direct_response}\n"
         task_current = f"\n\n用户当前的任务是：{user_input}"

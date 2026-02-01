@@ -1,5 +1,10 @@
 """控制台 UI"""
 
+from rich.live import Live
+from rich.panel import Panel
+import json
+import json_repair
+import re
 from contextlib import contextmanager
 from rich.console import Console
 from rich.panel import Panel
@@ -46,10 +51,6 @@ class ConsoleUI:
     @contextmanager
     def streaming_display(self):
         """流式显示 AI 响应的各个字段"""
-        from rich.live import Live
-        from rich.panel import Panel
-        import json
-        import re
         
         # 创建一个可变的内容容器
         class StreamingContent:
@@ -62,6 +63,8 @@ class ConsoleUI:
                 self.error_analysis = ""
                 self.direct_response = ""
                 self.code = ""
+                self.title = ""
+                self.outline = []
                                 
                 # 记录每个字段当前已显示的长度
                 self.thinking_displayed = 0
@@ -71,6 +74,7 @@ class ConsoleUI:
                 self.error_analysis_displayed = 0
                 self.direct_response_displayed = 0
                 self.code_displayed = 0
+                self.title_displayed = 0
             
             def add_token(self, token: str):
                 """添加新的 token 并实时提取字段内容"""
@@ -121,6 +125,33 @@ class ConsoleUI:
                     raw_content = code_match.group(1)
                     self.code = raw_content.replace('\\n', '\n').replace('\\"', '"').replace('\\\\', '\\')
                 
+                # 提取 PPT skill title 字段
+                title_match = re.search(r'"title"\s*:\s*"((?:[^"\\]|\\.)*)', self.buffer)
+                if title_match:
+                    raw_content = title_match.group(1)
+                    self.title = raw_content.replace('\\n', '\n').replace('\\"', '"').replace('\\\\', '\\')
+                
+                # 提取 PPT skill outline 字段 using json_repair
+                try:
+                    # Attempt to use json_repair to parse the outline field
+                    
+                    # Look for the outline field in the buffer
+                    outline_match = re.search(r'("outline"\s*:\s*\[.*?\])', self.buffer, re.DOTALL)
+                    if outline_match:
+                        outline_part = outline_match.group(1)
+                        # Extract the value after the colon
+                        colon_pos = outline_part.find(':')
+                        if colon_pos != -1:
+                            outline_value = outline_part[colon_pos+1:].strip()
+                            self.outline = json_repair.loads(outline_value)
+                except (ImportError, Exception):
+                    # Fallback: try to find and parse outline if it appears complete
+                    try:
+                        outline_match = re.search(r'"outline"\s*:\s*(\[.*?\])', self.buffer)
+                        if outline_match:
+                            self.outline = json.loads(outline_match.group(1))
+                    except (json.JSONDecodeError, AttributeError):
+                        pass  # Keep trying as more tokens arrive
 
             
             def get_display(self):
@@ -134,6 +165,32 @@ class ConsoleUI:
                     panels.append(Panel(
                         f"💭 {self.thinking}",
                         title="[bold blue]💡 思考过程[/bold blue]",
+                        border_style="blue",
+                        padding=(1, 2)
+                    ))
+                
+                # PPT Title - 实时显示
+                if self.title:
+                    panels.append(Panel(
+                        f"📄 {self.title}",
+                        title="[bold magenta]🎯 PPT 标题[/bold magenta]",
+                        border_style="magenta",
+                        padding=(1, 2)
+                    ))
+                
+                # PPT Outline - 实时显示
+                if self.outline:
+                    outline_content = ""
+                    for i, slide in enumerate(self.outline, 1):
+                        if isinstance(slide, dict):
+                            title = slide.get('title', 'Untitled')
+                            content = slide.get('content', '')[:100]  # Limit content preview
+                            outline_content += f"{i}. {title}\n   {content}{'...' if len(slide.get('content', '')) > 100 else ''}\n\n"
+                        else:
+                            outline_content += f"{i}. {str(slide)}\n\n"
+                    panels.append(Panel(
+                        outline_content.rstrip(),
+                        title="[bold blue]📋 PPT 大纲[/bold blue]",
                         border_style="blue",
                         padding=(1, 2)
                     ))
