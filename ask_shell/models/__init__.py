@@ -1,5 +1,5 @@
 """数据模型"""
 
-from .types import TaskContext, TaskStatus, ExecutionResult, LLMResponse, Message
+from .types import TaskStatus, ExecutionResult, LLMResponse, Message
 
-__all__ = ["TaskContext", "TaskStatus", "ExecutionResult", "LLMResponse", "Message"]
+__all__ = ["TaskStatus", "ExecutionResult", "LLMResponse", "Message"]

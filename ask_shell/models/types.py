@@ -65,6 +65,14 @@ class PPTSkillResponse:
             self.outline = []
 
 @dataclass
+class BrowserSkillResponse:
+    """Dataclass for BrowserSkill LLM response - matches the JSON schema expected by the prompt"""
+    thinking: str = ""
+    code: str = ""
+    explanation: str = ""
+
+
+@dataclass
 class SkillExecutionResponse:
     thinking: str = ""  # Reasoning process
     # Command execution fields (for command generation skills)
@@ -161,19 +169,4 @@ class Message:
     content: str
 
 
-@dataclass
-class TaskContext:
-    """任务上下文"""
-    task_description: str
-    status: TaskStatus = TaskStatus.PENDING
-    iteration: int = 0
-    history: List[ExecutionResult] = field(default_factory=list)
-    
-    def add_result(self, result: ExecutionResult):
-        """添加执行结果到历史"""
-        self.history.append(result)
-    
-    @property
-    def last_result(self) -> Optional[ExecutionResult]:
-        """获取最后一次执行结果"""
-        return self.history[-1] if self.history else None
+

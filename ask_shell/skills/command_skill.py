@@ -5,6 +5,7 @@ from typing import List, Optional, Dict, Any, Callable
 from .base_skill import BaseSkill, SkillExecutionResponse, SkillCapability
 from ..llm.base import BaseLLMClient
 from ..llm.openai_client import OpenAIClient
+from ..skills.utils import build_full_history_message
 
 
 class CommandSkill(BaseSkill):
@@ -22,9 +23,7 @@ class CommandSkill(BaseSkill):
     "next_step": "下一步计划（如果任务还未完成）",
     "error_analysis": "如果上一条命令执行失败，分析失败原因",
     "is_dangerous": false,
-    "danger_reason": "如果是危险操作，说明原因",
-    "direct_response": "当需要AI直接处理内容时填写（如翻译、总结、分析命令输出等）",
-
+    "danger_reason": "如果是危险操作，说明原因"
 }
 
 重要规则：
@@ -70,9 +69,6 @@ class CommandSkill(BaseSkill):
         """
         super().__init__()
         self.llm: BaseLLMClient = OpenAIClient()
-        # Set the system prompt for command mode
-        self.llm.set_system_prompt(self.SYSTEM_PROMPT)
-        self.llm.set_direct_mode(False)  # Set to command mode
     
     def get_capabilities(self) -> List[SkillCapability]:
         """Command skill provides command generation capability"""
@@ -109,50 +105,22 @@ class CommandSkill(BaseSkill):
         # Get the reasoning for why this skill was selected (though command skill doesn't modify its behavior based on this)
         selection_reasoning = kwargs.get('selection_reasoning', '')
             
-        # Set LLM to command mode
-        self.llm.set_direct_mode(False)
             
         # Call LLM to generate response with direct parsing using CommandSkillResponse dataclass
         try:
             from ..models.types import CommandSkillResponse
             # Generate and directly parse into CommandSkillResponse
-            llm_response = self.llm.generate(task, last_result, stream_callback, history=history, response_class=CommandSkillResponse)
+            user_prompt = build_full_history_message(history, task)
+            llm_response = self.llm.generate(self.SYSTEM_PROMPT, user_prompt, stream_callback, response_class=CommandSkillResponse)
             
-            # If the response is already parsed (when response_class is provided), use it directly
-            if hasattr(llm_response, 'command'):  # It's already a CommandSkillResponse object
-                parsed_response = llm_response
-            else:
-                # Fallback to raw JSON parsing if needed
-                import json
-                try:
-                    parsed_data = json.loads(llm_response.raw_json)
-                    # Create CommandSkillResponse manually
-                    parsed_response = CommandSkillResponse(
-                        thinking=parsed_data.get("thinking", ""),
-                        command=parsed_data.get("command", ""),
-                        explanation=parsed_data.get("explanation", ""),
-                        next_step=parsed_data.get("next_step", ""),
-                        error_analysis=parsed_data.get("error_analysis", ""),
-                        is_dangerous=parsed_data.get("is_dangerous", False),
-                        danger_reason=parsed_data.get("danger_reason", ""),
-                        direct_response=parsed_data.get("direct_response", "")
-                    )
-                except json.JSONDecodeError:
-                    return SkillExecutionResponse(
-                        thinking="Failed to parse LLM response as JSON",
-                        direct_response=f"Error: Invalid JSON response from LLM: {llm_response.raw_json if hasattr(llm_response, 'raw_json') else str(llm_response)}"
-                    )
-            
-            # Convert to SkillExecutionResponse
-            # Individual skills no longer decide task completion - that's handled by the skill selector
             return SkillExecutionResponse(
-                thinking=parsed_response.thinking,
-                command=parsed_response.command,
-                explanation=parsed_response.explanation,
-                next_step=parsed_response.next_step,
-                is_dangerous=parsed_response.is_dangerous,
-                danger_reason=parsed_response.danger_reason,
-                error_analysis=parsed_response.error_analysis,
+                thinking=llm_response.thinking,
+                command=llm_response.command,
+                explanation=llm_response.explanation,
+                next_step=llm_response.next_step,
+                is_dangerous=llm_response.is_dangerous,
+                danger_reason=llm_response.danger_reason,
+                error_analysis=llm_response.error_analysis,
                 # Don't set task_complete here - skill selector will decide
             )
         except Exception as e:
@@ -163,8 +131,8 @@ class CommandSkill(BaseSkill):
     
     def reset(self):
         """Reset LLM conversation state"""
-        self.llm.reset()
-    
+        pass
+
     def get_description(self) -> str:
         """Get skill description"""
         return "命令生成AI助手，专门生成和执行shell命令来完成任务"

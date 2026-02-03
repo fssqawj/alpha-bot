@@ -6,6 +6,8 @@ from typing import List, Optional, Dict, Any
 from loguru import logger
 from .base_skill import BaseSkill
 from ..models.types import ExecutionResult
+from .utils import build_full_history_message
+
 
 
 class SkillSelector:
@@ -136,30 +138,11 @@ class SkillSelector:
         iteration = context.get('iteration', 0)
         history: list[ExecutionResult] = context.get('history', [])
         last_result = context.get('last_result')
+        memory_bank = context.get('memory_bank')
         
         desc = f"- 当前步骤: 第{iteration}步\n"
         
-        # 添加历史信息
-        if history:
-            desc += f"- 历史步骤数: {len(history)}\n"
-            desc += "- 历史执行记录(只显示最近3个):\n"
-            for i, hist_item in enumerate(history[-3:]):  # 只显示最近3个历史记录
-                # 检查hist_item是ExecutionResult对象还是字典
-                idx = max(len(history) - 2, 1) + i
-                success = '成功' if hist_item.success else '失败'
-                desc += f"第 {idx} 步执行记录\n"
-                desc += f"  技能选择: {hist_item.skill_response.skill_name}\n"
-                desc += f"  技能选择原因: {hist_item.skill_response.select_reason}\n"
-                desc += f"  技能执行思考过程: {hist_item.skill_response.thinking}\n"
-                desc += f"  下一步计划: {hist_item.skill_response.next_step}\n"
-                if hist_item.command:
-                    desc += f"  执行的命令: {hist_item.command}\n"
-                    desc += f"  命令的输出: {hist_item.output}\n"
-                    desc += f"  是否执行成功: {success}\n"
-                if hist_item.skill_response.direct_response:
-                    desc += f"  直接响应: {hist_item.skill_response.direct_response}\n"
-        else:
-            desc += "- 历史执行记录: 无\n"
+        desc += build_full_history_message(history, memory_bank=memory_bank)
         
         return desc
     

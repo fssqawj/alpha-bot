@@ -5,6 +5,8 @@ import time
 from bs4 import BeautifulSoup, Tag
 from loguru import logger
 from .base_skill import BaseSkill, SkillCapability, SkillExecutionResponse
+from ..models.types import BrowserSkillResponse
+
 from ..llm.openai_client import OpenAIClient
 import json
 import tempfile
@@ -154,10 +156,7 @@ except Exception as e:
 {
   "thinking": "分析当前任务，决定第一步操作",
   "code": "Python代码（完整可执行的代码）",
-  "explanation": "解释这一步要做什么",
-  "is_dangerous": false,
-  "danger_reason": "",
-  "next_action": "描述下一步计划"
+  "explanation": "解释这一步要做什么"
 }"""
 
     
@@ -927,28 +926,21 @@ except Exception as e:
         logger.info(f"Browser Skill User Message: {user_message}") 
         # Call LLM to generate browser automation code
         try:
-            response_text = self.llm.chat(
-                messages=[
-                    {"role": "system", "content": self.SYSTEM_PROMPT},
-                    {"role": "user", "content": user_message}
-                ],
-                stream_callback=stream_callback
+            response_data = self.llm.generate(
+                system_prompt=self.SYSTEM_PROMPT,
+                user_input=user_message,
+                stream_callback=stream_callback,
+                response_class=BrowserSkillResponse
             )
             
-            # Debug: print response if empty
-            if not response_text or not response_text.strip():
+            if not response_data:
                 return SkillExecutionResponse(
                     thinking="LLM返回了空响应",
                     direct_response="错误：LLM未能生成浏览器自动化代码"
                 )
             
-            # Parse LLM response
-            response_data = self._parse_llm_response(response_text)
-            
-            # print(f"[DEBUG] Parsed Response Data: {response_data}")  # 仅在调试时启用
-            
             # Check if code was generated
-            code = response_data.get("code", "").strip()
+            code = response_data.code
             if not code:
                 # print(f"[DEBUG] No code generated! Response data: {response_data}")  # 仅在调试时启用
                 return SkillExecutionResponse(
@@ -957,7 +949,7 @@ except Exception as e:
                 )
             
             # Record the operation in history
-            explanation = response_data.get("explanation", "未知操作")
+            explanation = response_data.explanation
             # Include a summary of the code being executed
             code_summary = code[:1024].replace('\n', ' ') + ('...' if len(code) > 1024 else '')
             operation_desc = f"{explanation} - 代码: {code_summary}"
@@ -999,11 +991,9 @@ except Exception as e:
             # Create the response - individual skills no longer decide task completion
             # The skill selector will determine if the overall task is complete
             response = SkillExecutionResponse(
-                thinking=response_data.get("thinking", ""),
+                thinking=response_data.thinking,
                 command=command,
-                explanation=response_data.get("explanation", ""),
-                is_dangerous=response_data.get("is_dangerous", False),
-                danger_reason=response_data.get("danger_reason", ""),
+                explanation=response_data.explanation
                 # Don't set task_complete here - skill selector will decide
             )
             

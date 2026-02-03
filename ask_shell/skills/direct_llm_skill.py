@@ -5,6 +5,7 @@ from typing import List, Optional, Dict, Any, Callable
 from .base_skill import BaseSkill, SkillExecutionResponse, SkillCapability
 from ..llm.base import BaseLLMClient
 from ..llm.openai_client import OpenAIClient
+from ..skills.utils import build_full_history_message
 
 
 class DirectLLMSkill(BaseSkill):
@@ -33,9 +34,6 @@ class DirectLLMSkill(BaseSkill):
         """
         super().__init__()
         self.llm: BaseLLMClient = OpenAIClient()
-        # Set the system prompt for direct mode
-        self.llm.set_system_prompt(self.SYSTEM_PROMPT)
-        self.llm.set_direct_mode(True)  # Set to direct mode
     
     def get_capabilities(self) -> List[SkillCapability]:
         """Direct LLM skill provides LLM processing capability"""
@@ -83,18 +81,13 @@ class DirectLLMSkill(BaseSkill):
         # The API requires 'json' to be present when using response_format='json_object'
         # Adding a note that contains the word 'json' to satisfy the API validation
         enhanced_prompt += "\n\n(Note: json format required)"
-        
-        # Set the enhanced prompt for this execution
-        self.llm.set_system_prompt(enhanced_prompt)
-            
-        # Set LLM to direct mode
-        self.llm.set_direct_mode(True)
             
         # Call LLM to generate response with direct parsing using DirectLLMSkillResponse dataclass
         try:
             from ..models.types import DirectLLMSkillResponse
             # Generate and directly parse into DirectLLMSkillResponse
-            llm_response = self.llm.generate(task, last_result, stream_callback, history=history, response_class=DirectLLMSkillResponse)
+            user_prompt = build_full_history_message(history, task)
+            llm_response = self.llm.generate(enhanced_prompt, user_prompt, stream_callback, response_class=DirectLLMSkillResponse)
             
             # If the response is already parsed (when response_class is provided), use it directly
             if hasattr(llm_response, 'direct_response'):  # It's already a DirectLLMSkillResponse object
@@ -131,8 +124,8 @@ class DirectLLMSkill(BaseSkill):
     
     def reset(self):
         """Reset LLM conversation state"""
-        self.llm.reset()
-    
+        pass
+
     def get_description(self) -> str:
         """Get skill description"""
-        return "直接处理AI助手，专门处理内容任务（翻译、总结、分析等），输入是之前技能的输出的有效文本信息并生成处理后的文本信息"
+        return "直接处理文本信息的AI助手，专门处理内容任务（翻译、总结、分析等），只能处理之前技能获取的纯文本信息"

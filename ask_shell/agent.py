@@ -1,11 +1,13 @@
 """Ask-Shell 核心逻辑"""
 
-from typing import Optional
+from dataclasses import dataclass, field
+from typing import Optional, List
 
-from .models.types import TaskContext, TaskStatus, ExecutionResult
+from .models.types import TaskStatus, ExecutionResult
 from .executor.shell import ShellExecutor
 from .ui.console import ConsoleUI
 from .skills import SkillManager, CommandSkill, DirectLLMSkill, PPTSkill, ImageSkill, BrowserSkill, WeChatSkill, FeishuSkill
+from .context.task_context import TaskContext
 
 
 class AskShell:
@@ -138,6 +140,7 @@ class AskShell:
                 'last_result': context.last_result,
                 'iteration': context.iteration,
                 'history': context.history,
+                'memory_bank': context.memory_bank,
             }
             
             # 使用技能管理器执行任务
@@ -171,8 +174,8 @@ class AskShell:
             
             # 如果没有命令，跳过
             if not command:
-                self.ui.print_warning("没有生成命令，跳过...")
-                context.history.append(ExecutionResult(command="", returncode=0, stdout="", stderr="没有生成命令，跳过...", skill_response=response))
+                self.ui.print_warning("改技能没有需要执行的命令。")
+                context.add_result(ExecutionResult(command="", returncode=0, stdout="", stderr="改技能没有需要执行的命令", skill_response=response))
                 continue
             
             # 处理用户确认（只有危险操作才需要确认）

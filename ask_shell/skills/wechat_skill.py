@@ -4,6 +4,7 @@ import subprocess
 import json
 from typing import List, Optional, Dict, Any, Callable
 from .base_skill import BaseSkill, SkillExecutionResponse, SkillCapability
+from ..skills.utils import build_full_history_message
 
 
 class WeChatSkill(BaseSkill):
@@ -73,9 +74,6 @@ AppleScript参考：
         # Import LLM client
         from ..llm.openai_client import OpenAIClient
         self.llm = OpenAIClient()
-        # Set the system prompt for WeChat automation
-        self.llm.set_system_prompt(self.SYSTEM_PROMPT)
-        self.llm.set_direct_mode(False)  # Set to command mode
 
     def get_capabilities(self) -> List[SkillCapability]:
         """WeChat skill provides GUI automation capability for WeChat messaging"""
@@ -112,14 +110,12 @@ AppleScript参考：
         # Get the reasoning for why this skill was selected
         selection_reasoning = kwargs.get('selection_reasoning', '')
 
-        # Set LLM to command mode
-        self.llm.set_direct_mode(False)
-
         # Call LLM to generate response with direct parsing
         try:
             from ..models.types import CommandSkillResponse
             # Generate and directly parse into CommandSkillResponse
-            llm_response = self.llm.generate(task, last_result, stream_callback, history=history, response_class=CommandSkillResponse)
+            user_prompt = build_full_history_message(history, task)
+            llm_response = self.llm.generate(self.SYSTEM_PROMPT, user_prompt, stream_callback, response_class=CommandSkillResponse)
 
             # If the response is already parsed (when response_class is provided), use it directly
             if hasattr(llm_response, 'command'):  # It's already a CommandSkillResponse object
@@ -166,7 +162,7 @@ AppleScript参考：
 
     def reset(self):
         """Reset LLM conversation state"""
-        self.llm.reset()
+        pass
 
     def get_description(self) -> str:
         """Get skill description"""

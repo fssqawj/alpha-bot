@@ -9,6 +9,8 @@ from typing import List, Optional, Dict, Any, Callable
 from .base_skill import BaseSkill, SkillExecutionResponse, SkillCapability
 from ..llm.base import BaseLLMClient
 from ..llm.openai_client import OpenAIClient
+from ..skills.utils import build_full_history_message
+
 
 try:
     from pptx import Presentation
@@ -73,8 +75,6 @@ class PPTSkill(BaseSkill):
 6. **美化要求**：内容应适合美观的PPT展示，包含清晰的标题、要点分明的内容，适合视觉呈现，考虑使用列表、要点、短句等形式便于PPT美化排版
 7. **结构化内容**：使用markdown-style formatting (bold **text**, bullet points, etc.) to enhance visual appeal
 8. **Layout considerations**：Specify appropriate layout_type for each slide based on content (e.g., 'list' for bullet points, 'bullet_points' for key points, 'image_placeholder' when visual elements would help)"""
-            self.llm.set_system_prompt(self.system_prompt)
-            self.llm.set_direct_mode(True)  # Use direct mode for content generation
             self.llm_available = True
         except Exception as e:
             # If LLM initialization fails (e.g., missing API key), still allow basic functionality
@@ -166,7 +166,8 @@ class PPTSkill(BaseSkill):
             
             from ..models.types import PPTSkillResponse
             # Generate and directly parse into PPTSkillResponse
-            llm_response = self.llm.generate(message, last_result, stream_callback=stream_callback, history=history, response_class=PPTSkillResponse)
+            user_prompt = build_full_history_message(history, message)
+            llm_response = self.llm.generate(self.system_prompt, user_prompt, stream_callback=stream_callback, response_class=PPTSkillResponse)
             logger.info(f"PPT Skill LLM Response: {llm_response}")
             
             # If the response is already parsed (when response_class is provided), use it directly

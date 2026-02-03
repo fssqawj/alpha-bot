@@ -3,8 +3,6 @@
 from rich.live import Live
 from rich.panel import Panel
 from loguru import logger
-import json
-import json_repair
 import re
 from contextlib import contextmanager
 from rich.console import Console
@@ -13,11 +11,10 @@ from rich.prompt import Prompt
 from rich.syntax import Syntax
 from rich.table import Table
 from rich.live import Live
-from rich.spinner import Spinner
-from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.markdown import Markdown
 
-from ..models.types import LLMResponse, ExecutionResult, TaskContext, TaskStatus
+from ..models.types import LLMResponse, ExecutionResult
+from ..context.task_context import TaskContext
 
 
 class ConsoleUI:
@@ -225,7 +222,7 @@ class ConsoleUI:
         
         content = StreamingContent()
         
-        with Live(content.get_display(), console=self.console, refresh_per_second=10, screen=False, vertical_overflow="visible") as live:
+        with Live(content.get_display(), console=self.console, refresh_per_second=10, screen=False) as live:
             def update_callback(token: str):
                 content.add_token(token)
                 live.update(content.get_display())
