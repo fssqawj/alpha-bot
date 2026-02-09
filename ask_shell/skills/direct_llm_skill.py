@@ -81,12 +81,19 @@ class DirectLLMSkill(BaseSkill):
         # The API requires 'json' to be present when using response_format='json_object'
         # Adding a note that contains the word 'json' to satisfy the API validation
         enhanced_prompt += "\n\n(Note: json format required)"
+        
+        # Build hints information
+        hints_info = self._build_hints_info()
             
         # Call LLM to generate response with direct parsing using DirectLLMSkillResponse dataclass
         try:
             from ..models.types import DirectLLMSkillResponse
             # Generate and directly parse into DirectLLMSkillResponse
             user_prompt = build_full_history_message(history, task)
+            
+            # Add hints to user prompt if available
+            if hints_info:
+                user_prompt = f"{user_prompt}\n\n{hints_info}"
             llm_response = self.llm.generate(enhanced_prompt, user_prompt, stream_callback, response_class=DirectLLMSkillResponse)
             
             # If the response is already parsed (when response_class is provided), use it directly

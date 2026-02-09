@@ -106,6 +106,9 @@ class PPTSkill(BaseSkill):
         # Get the reasoning for why this skill was selected
         selection_reasoning = kwargs.get('selection_reasoning', '')
         
+        # Build hints information
+        hints_info = self._build_hints_info()
+        
         if not self.initialized:
             return SkillExecutionResponse(
                 thinking="Checking if required library (python-pptx) is installed",
@@ -157,6 +160,10 @@ class PPTSkill(BaseSkill):
             return self._parse_task_basic(task, history, last_result)
         
         context_str = f"{task}\n\n"
+        
+        # Add hints to context if available
+        if hints_info:
+            context_str = f"{context_str}\n\n{hints_info}"
         
         message = f"{context_str}\n\n请根据以上信息为PowerPoint演示文稿生成合适的大纲和每页的详细内容。" 
         

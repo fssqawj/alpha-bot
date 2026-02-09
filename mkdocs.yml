@@ -68,6 +68,7 @@ nav:
   - User Guide:
     - Basic Usage: user-guide/basic-usage.md
     - Advanced Features: user-guide/advanced-features.md
+    - Auto Hints System: user-guide/auto-hints-system.md
     - Safety Features: user-guide/safety.md
     - Examples: user-guide/examples.md
   - API Reference:

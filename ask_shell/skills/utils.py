@@ -38,25 +38,27 @@ def build_full_history_message(history: List[ExecutionResult], task: str = "", m
         for i, result in enumerate(history[-3:]):
             idx = max(len(history) - 2, 1) + i
             status = "成功" if result.success else "失败"
-            
-            # 智能判断是否需要更多内容：基于输出长度和内容类型
-            # 如果输出较短或包含结构化数据，使用完整内容；否则截断
-            output = result.get_output_for_llm()  # 默认使用完整内容以提供更多信息
-            
             history_str += f"\n第{idx}步 - 命令执行{status}：\n"
-            history_str += f"技能选择: {result.skill_response.skill_name}\n"
-            history_str += f"技能选择原因: {result.skill_response.select_reason}\n"
-            if result.skill_response.thinking:
-                history_str += f"技能执行思考过程: {result.skill_response.thinking}\n"
-            if result.skill_response.next_step:
-                history_str += f"下一步计划: {result.skill_response.next_step}\n"
-            if result.command:   
-                history_str += f"执行命令: {result.command}\n"
-                history_str += f"返回码: {result.returncode}\n"
-                history_str += f"命令输出:\n{output}\n"
-            if result.skill_response.direct_response:
-                history_str += f"直接响应: {result.skill_response.direct_response}\n"
+            history_str += format_one_step_message(result)
         if task:
             task_current = f"\n\n用户当前的任务是：{task}"
             return f"{history_str}{task_current}"
         return history_str
+
+
+def format_one_step_message(result: ExecutionResult) -> str:
+    """格式化单步执行结果消息"""
+    output = result.get_output_for_llm()  # 默认使用完整内容以提供更多信息
+    history_str = f"技能选择: {result.skill_response.skill_name}\n"
+    history_str += f"技能选择原因: {result.skill_response.select_reason}\n"
+    if result.skill_response.thinking:
+        history_str += f"技能执行思考过程: {result.skill_response.thinking}\n"
+    if result.skill_response.next_step:
+        history_str += f"下一步计划: {result.skill_response.next_step}\n"
+    if result.command:   
+        history_str += f"执行命令: {result.command}\n"
+        history_str += f"返回码: {result.returncode}\n"
+        history_str += f"命令输出:\n{output}\n"
+    if result.skill_response.direct_response:
+        history_str += f"直接响应: {result.skill_response.direct_response}\n"
+    return history_str

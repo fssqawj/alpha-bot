@@ -136,3 +136,5 @@ Thumbs.db
 output/
 generated_skills/
 hints/
+.password
+hints_generated/

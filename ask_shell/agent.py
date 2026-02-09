@@ -113,6 +113,10 @@ class AskShell:
             except Exception as e:
                 self.ui.print_error(f"技能执行失败: {e}")
                 context.status = TaskStatus.FAILED
+                
+                # Trigger auto hint learning even on failure to learn from mistakes
+                self._trigger_auto_hint_learning(context, task)
+                
                 break
             
             # 显示响应（跳过所有字段，因为已经流式显示了）
@@ -145,6 +149,10 @@ class AskShell:
             if action == "quit":
                 context.status = TaskStatus.CANCELLED
                 self.ui.print_cancelled()
+                
+                # Trigger auto hint learning even on cancellation to capture partial learning
+                self._trigger_auto_hint_learning(context, task)
+                
                 break
             elif action == "skip":
                 # 跳过时，告诉技能用户选择跳过
@@ -176,6 +184,10 @@ class AskShell:
             if task_complete:
                 context.status = TaskStatus.COMPLETED
                 self.ui.print_complete()
+                
+                # Trigger auto hint learning after successful task completion
+                self._trigger_auto_hint_learning(context, task)
+                
                 # 任务完成后清理技能状态，特别是浏览器技能
                 self.skill_manager.reset_all()
                 break
@@ -237,3 +249,29 @@ class AskShell:
                 self.skill_manager.reset_all()
                 self.ui.console.print("\n[yellow]再见![/yellow]")
                 break
+    
+    def _trigger_auto_hint_learning(self, context, task_description: str):
+        """
+        Trigger auto hint learning after task completion
+        
+        Args:
+            context: Task context with execution history
+            task_description: Original task description
+        """
+        try:
+            from .auto_hint import get_auto_hint_system
+            auto_hint_system = get_auto_hint_system()
+            
+            # Only trigger learning if we have sufficient history
+            if len(context.history) >= 2:
+                auto_hint_system.process_task_completion(
+                    context.history, 
+                    self.skill_manager.skills, 
+                    task_description
+                )
+                logger.info("Auto hint learning triggered after task completion")
+            else:
+                logger.debug("Insufficient execution history for hint learning")
+                
+        except Exception as e:
+            logger.warning(f"Failed to trigger auto hint learning: {e}")

@@ -6,8 +6,10 @@ from bs4 import BeautifulSoup, Tag
 from loguru import logger
 from .base_skill import BaseSkill, SkillExecutionResponse
 from ..models.types import BrowserSkillResponse
+from .utils import format_one_step_message
 
 from ..llm.openai_client import OpenAIClient
+from ..auto_hint import get_auto_hint_system
 import json
 import tempfile
 import os
@@ -164,6 +166,7 @@ except Exception as e:
     def __init__(self):
         super().__init__()
         self.llm = OpenAIClient()
+        self.auto_hint_system = get_auto_hint_system()
     
     @classmethod
     def get_or_create_browser(cls):
@@ -1028,7 +1031,25 @@ except Exception as e:
             )
     
     def _build_hints_info(self) -> str:
-        """Read all markdown files from the hints folder and concatenate their content."""
+        """Build hints information from both static files and auto-generated hints"""
+        hints_content = []
+        
+        # 1. Load static hints from files
+        static_hints = self._load_static_hints()
+        if static_hints:
+            hints_content.append("静态提示信息：")
+            hints_content.append(static_hints)
+        
+        # 2. Load auto-generated hints
+        auto_hints = self._load_auto_hints()
+        if auto_hints:
+            hints_content.append("\n自动生成的提示信息：")
+            hints_content.append(auto_hints)
+        
+        return "\n".join(hints_content) if hints_content else ""
+    
+    def _load_static_hints(self) -> str:
+        """Load static hints from markdown files"""
         import os
         import glob
         
@@ -1040,12 +1061,43 @@ except Exception as e:
             try:
                 with open(md_file, 'r', encoding='utf-8') as f:
                     content = f.read()
-                    if self._browser_page and self._browser_page.url in content:
-                        all_content.append(f"--- Content from {os.path.relpath(md_file, hints_dir)} ---\n{content}\n")
+                    # 从浏览器页面URL中提取域名信息
+                    if self._browser_page and self._browser_page.url:
+                        from urllib.parse import urlparse
+                        current_domain = urlparse(self._browser_page.url).netloc
+                        logger.info(f"Current domain: {current_domain}")
+                        if current_domain and current_domain in content:
+                            all_content.append(f"--- Content from {os.path.relpath(md_file, hints_dir)} ---\n{content}\n")
             except Exception as e:
                 print(f"Warning: Could not read {md_file}: {e}")
         
-        return "信息抽取建议：\n" + "\n".join(all_content) if all_content else ""
+        return "\n".join(all_content) if all_content else ""
+    
+    def _load_auto_hints(self) -> str:
+        """Load auto-generated hints from the hint system"""
+        try:
+            hints = self.auto_hint_system.get_hints_for_skill("BrowserSkill", max_hints=3)
+            
+            if not hints:
+                return ""
+            
+            hint_lines = ["基于历史执行经验的建议："]
+            for i, hint in enumerate(hints, 1):
+                metadata = hint.get("metadata", {})
+                content = hint.get("content", "")
+                
+                hint_lines.append(f"\n{i}. {metadata.get('title', '提示')}:")
+                hint_lines.append(f"   {content}")
+                
+                # Record hint usage
+                if "id" in metadata:
+                    self.auto_hint_system.record_hint_usage(metadata["id"])
+            
+            return "\n".join(hint_lines)
+            
+        except Exception as e:
+            logger.warning(f"Failed to load auto hints: {e}")
+            return ""
 
     def _build_context_info(self, context: Optional[Dict[str, Any]]) -> str:
         """Build context information string with page state feedback"""
@@ -1074,41 +1126,9 @@ except Exception as e:
         # Add last result if available
         if context.get("last_result"):
             result = context["last_result"]
-            info_parts.append(f"\n上一步执行结果：")
-            
-            if result.returncode == 0:
-                info_parts.append("✅ 执行成功")
-            else:
-                info_parts.append(f"❌ 执行失败（返回码: {result.returncode}）")
-            
-            # Extract useful information from output
-            if result.stdout:
-                output = result.stdout.strip()
-                                
-                # Look for screenshot paths
-                import re
-                screenshot_match = re.search(r'截图已保存: ([^\n]+)', output)
-                if screenshot_match:
-                    info_parts.append(f"📸 截图: {screenshot_match.group(1)}")
-                                
-                # Look for URLs
-                url_match = re.search(r'当前URL: ([^\n]+)', output)
-                if url_match:
-                    info_parts.append(f"🌐 当前URL: {url_match.group(1)}")
-                                
-                # Look for page titles
-                title_match = re.search(r'页面标题: ([^\n]+)', output)
-                if title_match:
-                    info_parts.append(f"📝 页面标题: {title_match.group(1)}")
-                                
-                # Show all output without truncation - critical for information processing in subsequent steps
-                info_parts.append(f"\n输出信息:\n{output}")
-            
-            if result.stderr:
-                error_msg = result.stderr.strip()[:300]
-                info_parts.append(f"\n错误信息:\n{error_msg}")
-        
-        return "\n".join(info_parts) if info_parts else ""
+            info_parts.append("\n上一步 Skill 执行结果：")
+            info_parts.append(format_one_step_message(result))
+        return "\n".join(info_parts)
     
     def _parse_llm_response(self, response_text: str) -> dict:
         """Parse LLM response to extract structured data"""

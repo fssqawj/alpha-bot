@@ -105,12 +105,18 @@ class CommandSkill(BaseSkill):
         # Get the reasoning for why this skill was selected (though command skill doesn't modify its behavior based on this)
         selection_reasoning = kwargs.get('selection_reasoning', '')
             
+        # Build hints information
+        hints_info = self._build_hints_info()
             
         # Call LLM to generate response with direct parsing using CommandSkillResponse dataclass
         try:
             from ..models.types import CommandSkillResponse
             # Generate and directly parse into CommandSkillResponse
             user_prompt = build_full_history_message(history, task)
+            
+            # Add hints to user prompt if available
+            if hints_info:
+                user_prompt = f"{user_prompt}\n\n{hints_info}"
             llm_response = self.llm.generate(self.SYSTEM_PROMPT, user_prompt, stream_callback, response_class=CommandSkillResponse)
             
             return SkillExecutionResponse(
