@@ -7,15 +7,15 @@
 </p>
 
 <p align="center">
-  <strong><em>🤖 你的 AI 任务自动化代理 - 不只是命令生成器！</em></strong>
+  <strong><em>🤖 你的 AI 任务自动化代理 - 利用各种系统应用解决用户任务！</em></strong>
 </p>
 
 <p align="center">
-  <strong>用自然语言描述复杂任务，让 AI 一步步执行直到完成</strong>
+  <strong>用自然语言描述复杂任务，让 AI 利用各种系统应用一步步执行直到完成</strong>
 </p>
 
 <p align="center">
-  <em>多步骤执行 • 失败自动重试 • 实时思考展示</em>
+  <em>多步骤执行 • 失败自动重试 • 实时思考展示 • 系统应用集成</em>
 </p>
 
 [![PyPI version](https://img.shields.io/pypi/v/alphabot-ai.svg)](https://pypi.org/project/alphabot-ai/)
@@ -61,7 +61,7 @@
 
 中文 | [English](README.md)
 
-Alpha-Bot 是一个 **AI 驱动的任务自动化代理**，它超越了简单的命令生成。与只能将查询转换为命令的工具不同，Alpha-Bot 能够**执行多步骤任务**、**从失败中学习**，并**调整策略**直到完成。
+Alpha-Bot 是一个 **AI 驱动的任务自动化代理**，它超越了简单的命令生成。与只能将查询转换为命令的工具不同，Alpha-Bot 能够**利用各种系统应用**来自主解决用户任务，**执行多步骤任务**、**从失败中学习**，并**调整策略**直到完成。
 
 ## 🎯 为什么选择 Alpha-Bot？
 

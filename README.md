@@ -12,15 +12,15 @@
 </p>
 
 <p align="center">
-  <strong><em>🤖 Your AI Task Automation Agent - Not Just Command Generator!</em></strong>
+  <strong><em>🤖 Your AI Task Automation Agent - Utilizes Various System Applications to Solve User Tasks!</em></strong>
 </p>
 
 <p align="center">
-  <strong>Describe complex tasks in plain language, and let AI execute them step-by-step until completion</strong>
+  <strong>Describe complex tasks in plain language, and let AI execute them step-by-step until completion using various system applications</strong>
 </p>
 
 <p align="center">
-  <em>Multi-step execution • Auto-retry on failure • Real-time thinking display</em>
+  <em>Multi-step execution • Auto-retry on failure • Real-time thinking display • System Application Integration</em>
 </p>
 
 ---
@@ -61,7 +61,7 @@
 
 [中文](README_zh.md) | English
 
-Alpha-Bot is an **AI-powered task automation agent** that goes beyond simple command generation. Unlike tools that only translate queries into commands, Alpha-Bot **executes multi-step tasks**, **learns from failures**, and **adapts its strategy** until completion.
+Alpha-Bot is an **AI-powered task automation agent** that goes beyond simple command generation. Unlike tools that only translate queries into commands, Alpha-Bot **utilizes various system applications** to autonomously solve user tasks, **executes multi-step tasks**, **learns from failures**, and **adapts its strategy** until completion.
 
 ## 🎯 Why Alpha-Bot?
 
