@@ -52,8 +52,6 @@ class AutoHintSystem:
         self._hints_cache = {}
         self._cache_timestamp = {}
         self.cache_ttl = timedelta(hours=1)  # Cache for 1 hour
-        
-        logger.info("AutoHintSystem initialized")
     
     def process_task_completion(self, history: List[ExecutionResult], 
                               skills,
