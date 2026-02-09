@@ -4,20 +4,20 @@ The Agent module implements the core task automation loop.
 
 ## Overview
 
-The `AskShell` class orchestrates the entire task execution workflow, managing the interaction between the LLM, command executor, and user interface.
+The `AlphaBot` class orchestrates the entire task execution workflow, managing the interaction between the LLM, command executor, and user interface.
 
-## Class: AskShell
+## Class: AlphaBot
 
-Located in: [`ask_shell/agent.py`](https://github.com/fssqawj/ask-shell/blob/main/ask_shell/agent.py)
+Located in: [`alpha_bot/agent.py`](https://github.com/fssqawj/alpha-bot/blob/main/alpha_bot/agent.py)
 
 ### Initialization
 
 ```python
-from ask_shell.agent import AskShell
-from ask_shell.llm import get_llm_client
-from ask_shell.executor import ShellExecutor
+from alpha_bot.agent import AlphaBot
+from alpha_bot.llm import get_llm_client
+from alpha_bot.executor import ShellExecutor
 
-agent = AskShell(
+agent = AlphaBot(
     llm_client=get_llm_client(),
     executor=ShellExecutor(),
     auto_mode=False
@@ -122,7 +122,7 @@ When command execution fails:
 ### Agent Parameters
 
 ```python
-class AskShell:
+class AlphaBot:
     def __init__(
         self,
         auto_execute: bool = False,
@@ -145,10 +145,10 @@ class AskShell:
 ### Basic Task Execution
 
 ```python
-from ask_shell.agent import AskShell
+from alpha_bot.agent import AlphaBot
 
 # Initialize components
-agent = AskShell()
+agent = AlphaBot()
 
 # Execute task
 agent.run("find all large files")
@@ -158,13 +158,13 @@ agent.run("find all large files")
 
 ```python
 import os
-from ask_shell.agent import AskShell
+from alpha_bot.agent import AlphaBot
 
 # Custom configuration
 os.environ['MODEL_NAME'] = 'gpt-4'
 
 # Agent with auto mode and custom workdir
-agent = AskShell(
+agent = AlphaBot(
     auto_execute=True,
     working_dir='/path/to/project'
 )
@@ -176,7 +176,7 @@ agent.run("run tests")
 
 ```python
 # Start interactive mode
-agent = AskShell()
+agent = AlphaBot()
 agent.run_interactive()
 ```
 
@@ -185,9 +185,9 @@ agent.run_interactive()
 ### Custom Agent Subclass
 
 ```python
-from ask_shell.agent import AskShell
+from alpha_bot.agent import AlphaBot
 
-class CustomAgent(AskShell):
+class CustomAgent(AlphaBot):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Custom initialization
@@ -208,7 +208,7 @@ class CustomAgent(AskShell):
 ### Custom Retry Logic
 
 ```python
-class SmartAgent(AskShell):
+class SmartAgent(AlphaBot):
     def should_retry(self, error: str, attempt: int) -> bool:
         """Custom retry decision logic"""
         # Don't retry authentication errors
@@ -219,7 +219,7 @@ class SmartAgent(AskShell):
         if 'connection refused' in error.lower():
             return attempt < 5
         
-        # Default behavior - note: AskShell doesn't have max_retries as a property
+        # Default behavior - note: AlphaBot doesn't have max_retries as a property
         return attempt < 3  # Default max retries
 ```
 
@@ -230,7 +230,7 @@ class SmartAgent(AskShell):
 Provide relevant context to improve command generation:
 
 ```python
-# Context is managed automatically by AskShell
+# Context is managed automatically by AlphaBot
 agent.run("commit changes")
 ```
 
@@ -263,7 +263,7 @@ finally:
 ### TaskAgent Class
 
 ```python
-class AskShell:
+class AlphaBot:
     """Main task automation agent"""
     
     def run(self, task: str) -> None:

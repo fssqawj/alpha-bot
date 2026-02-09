@@ -3,7 +3,7 @@ requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "askshell-ai"
+name = "alphabot-ai"
 version = "0.3.0"
 description = "用自然语言操控你的终端 - 让 AI 帮你生成并执行 Shell 命令"
 authors = [
@@ -39,13 +39,13 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/fssqawj/ask-shell"
-Repository = "https://github.com/fssqawj/ask-shell"
-Issues = "https://github.com/fssqawj/ask-shell/issues"
+Homepage = "https://github.com/fssqawj/alpha-bot"
+Repository = "https://github.com/fssqawj/alpha-bot"
+Issues = "https://github.com/fssqawj/alpha-bot/issues"
 
 [project.scripts]
-ask-shell = "ask_shell.cli:main"
-ask = "ask_shell.cli:main"
+alpha-bot = "alpha_bot.cli:main"
+ask = "alpha_bot.cli:main"
 
 [tool.setuptools]
-packages = ["ask_shell", "ask_shell.executor", "ask_shell.llm", "ask_shell.models", "ask_shell.ui", "ask_shell.skills", "ask_shell.web"]
+packages = ["alpha_bot", "alpha_bot.executor", "alpha_bot.llm", "alpha_bot.models", "alpha_bot.ui", "alpha_bot.skills", "alpha_bot.web"]

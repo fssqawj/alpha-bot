@@ -6,13 +6,13 @@ import os
 from pathlib import Path
 from unittest.mock import Mock, patch
 
-from ask_shell.auto_hint.types import HintPattern, HintCategory, HintMetadata
-from ask_shell.auto_hint.analyzer import ExecutionResultAnalyzer
-from ask_shell.auto_hint.generator import HintGenerator
-from ask_shell.auto_hint.persistence import HintPersistenceManager
-from ask_shell.auto_hint.system import AutoHintSystem, get_auto_hint_system
-from ask_shell.models.types import ExecutionResult, SkillResponse
-from ask_shell.skills.base_skill import BaseSkill
+from alpha_bot.auto_hint.types import HintPattern, HintCategory, HintMetadata
+from alpha_bot.auto_hint.analyzer import ExecutionResultAnalyzer
+from alpha_bot.auto_hint.generator import HintGenerator
+from alpha_bot.auto_hint.persistence import HintPersistenceManager
+from alpha_bot.auto_hint.system import AutoHintSystem, get_auto_hint_system
+from alpha_bot.models.types import ExecutionResult, SkillResponse
+from alpha_bot.skills.base_skill import BaseSkill
 
 
 class TestHintTypes(unittest.TestCase):

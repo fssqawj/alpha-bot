@@ -22,7 +22,7 @@ class SkillPersistence:
                        Defaults to skills/generated_skills/
         """
         if skills_dir is None:
-            # Default to ask_shell/skills/generated_skills/
+            # Default to alpha_bot/skills/generated_skills/
             current_dir = Path(__file__).parent
             self.skills_dir = current_dir / "generated_skills"
         else:
@@ -92,7 +92,7 @@ class SkillPersistence:
             module = importlib.util.module_from_spec(spec)
             sys.modules[module_name] = module
             # Add the current directory to the module's globals to help with relative imports
-            module.__package__ = 'ask_shell.skills.generated_skills'
+            module.__package__ = 'alpha_bot.skills.generated_skills'
             spec.loader.exec_module(module)
             
             # Get the skill class (should match the filename)
@@ -177,10 +177,10 @@ class SkillPersistence:
         code = f'''"""Generated skill: {skill_name}"""
 
 from typing import List, Dict, Any, Optional
-from ask_shell.skills.base_skill import BaseSkill
-from ask_shell.models.types import SkillExecutionResponse
-from ask_shell.llm.openai_client import OpenAIClient
-from ask_shell.skills.utils import build_full_history_message
+from alpha_bot.skills.base_skill import BaseSkill
+from alpha_bot.models.types import SkillExecutionResponse
+from alpha_bot.llm.openai_client import OpenAIClient
+from alpha_bot.skills.utils import build_full_history_message
 
 
 class {class_name}(BaseSkill):
@@ -221,7 +221,7 @@ class {class_name}(BaseSkill):
         
         # Call LLM to generate response
         try:
-            from ask_shell.models.types import CommandSkillResponse
+            from alpha_bot.models.types import CommandSkillResponse
             llm_response = self.llm.generate(
                 self.system_prompt,
                 user_prompt,

@@ -1,4 +1,4 @@
-# Ask-Shell
+# Alpha-Bot
 
 <p align="center">
   <strong><em>🤖 Your AI Task Automation Agent - Not Just Command Generator!</em></strong>
@@ -12,7 +12,7 @@
   <em>Multi-step execution • Auto-retry on failure • Real-time thinking display</em>
 </p>
 
-[![PyPI version](https://img.shields.io/pypi/v/askshell-ai.svg)](https://pypi.org/project/askshell-ai/)
+[![PyPI version](https://img.shields.io/pypi/v/alpha-bot.svg)](https://pypi.org/project/alpha-bot/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
 
@@ -20,9 +20,9 @@
 
 ## Overview
 
-Ask-Shell is an **AI-powered task automation agent** that goes beyond simple command generation. Unlike tools that only translate single queries into commands, Ask-Shell acts as an intelligent agent that can handle **multi-step tasks**, **learn from failures**, and **adapt its strategy** until your task is truly complete.
+Alpha-Bot is an **AI-powered task automation agent** that goes beyond simple command generation. Unlike tools that only translate single queries into commands, Alpha-Bot acts as an intelligent agent that can handle **multi-step tasks**, **learn from failures**, and **adapt its strategy** until your task is truly complete.
 
-## What Makes Ask-Shell Special?
+## What Makes Alpha-Bot Special?
 
 **Not Just a Command Generator - A True Task Automation Agent!**
 
@@ -33,11 +33,11 @@ Ask-Shell is an **AI-powered task automation agent** that goes beyond simple com
 | 💭 **Shows its thinking** | in real-time for transparency |
 | ✅ **Doesn't stop** | until your task is complete |
 
-## Why Ask-Shell?
+## Why Alpha-Bot?
 
 ### Task-Oriented, Not Command-Oriented
 
-| Other Tools | Ask-Shell |
+| Other Tools | Alpha-Bot |
 |------------|-----------|
 | Generate ONE command → Done | Execute MULTIPLE steps → Analyze results → Adjust strategy → Complete task |
 | "Here's your command, you run it" | "I'll keep working until the task is finished" |
@@ -59,7 +59,7 @@ Ask-Shell is an **AI-powered task automation agent** that goes beyond simple com
 - 📊 **File Generation** - Create PPTs, images and other files from natural language
 - 💬 **Communication Automation** - Feishu automation for macOS (WeChat automation available but currently disabled)
 - 🔌 **Extensible Skills** - Plugin-ready architecture for adding new capabilities
-- 🌐 **Web Interface** - Access Ask-Shell through a web interface
+- 🌐 **Web Interface** - Access Alpha-Bot through a web interface
 
 ## Quick Links
 
@@ -72,7 +72,7 @@ Ask-Shell is an **AI-powered task automation agent** that goes beyond simple com
 
 ## Demo Videos
 
-Check out our [Examples](user-guide/examples.md) page to see Ask-Shell in action!
+Check out our [Examples](user-guide/examples.md) page to see Alpha-Bot in action!
 
 ## Tech Stack
 
@@ -83,7 +83,7 @@ Check out our [Examples](user-guide/examples.md) page to see Ask-Shell in action
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/fssqawj/ask-shell/blob/main/LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/fssqawj/alpha-bot/blob/main/LICENSE) file for details.
 
 ## Contributing
 

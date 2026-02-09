@@ -1,4 +1,4 @@
-"""Web Server for Ask-Shell UI - Enhanced Version"""
+"""Web Server for Alpha-Bot UI - Enhanced Version"""
 
 import asyncio
 import json
@@ -11,7 +11,7 @@ from flask import Flask, render_template, request, jsonify, send_from_directory
 from flask_socketio import SocketIO, emit
 from dataclasses import dataclass, asdict
 
-from ..agent import AskShell
+from ..agent import AlphaBot
 from ..ui.console import ConsoleUI
 from rich.panel import Panel
 from rich.syntax import Syntax
@@ -35,12 +35,12 @@ class TaskRecord:
 
 
 class WebUI:
-    """Enhanced Web-based UI for Ask-Shell with history tracking"""
+    """Enhanced Web-based UI for Alpha-Bot with history tracking"""
     
     def __init__(self, app, socketio):
         self.app = app
         self.socketio = socketio
-        self.active_sessions: Dict[str, AskShell] = {}
+        self.active_sessions: Dict[str, AlphaBot] = {}
         self.session_outputs: Dict[str, List[str]] = {}
         self.task_history: List[TaskRecord] = []
         self.task_storage_path = os.path.join(os.path.dirname(__file__), 'task_history.json')
@@ -190,7 +190,7 @@ class WebUI:
             
             # Initialize agent for this session
             if session_id not in self.active_sessions:
-                self.active_sessions[session_id] = AskShell(auto_execute=True)
+                self.active_sessions[session_id] = AlphaBot(auto_execute=True)
                 self.session_outputs[session_id] = []
             
             # Initialize execution log for this session
@@ -313,7 +313,7 @@ class WebUI:
             
             # Initialize agent for this session if not exists
             if session_id not in self.active_sessions:
-                self.active_sessions[session_id] = AskShell(auto_execute=True)
+                self.active_sessions[session_id] = AlphaBot(auto_execute=True)
                 self.session_outputs[session_id] = []
             
             # Initialize execution log for this session
@@ -730,7 +730,7 @@ def create_app():
     app = Flask(__name__, 
                 template_folder=os.path.join(os.path.dirname(__file__), 'templates'),
                 static_folder=os.path.join(os.path.dirname(__file__), 'static'))
-    app.secret_key = 'ask-shell-web-ui-secret-key'
+    app.secret_key = 'alpha-bot-web-ui-secret-key'
     
     # Configure SocketIO with async mode
     socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading')
@@ -744,14 +744,14 @@ def create_app():
 def run_web_server(host='localhost', port=5000, debug=False):
     """Run the web server"""
     app, socketio = create_app()
-    print(f"Starting Ask-Shell Web UI at http://{host}:{port}")
+    print(f"Starting Alpha-Bot Web UI at http://{host}:{port}")
     socketio.run(app, host=host, port=port, debug=debug, use_reloader=False)
 
 
 def main():
     """Main entry point"""
     import argparse
-    parser = argparse.ArgumentParser(description='Ask-Shell Web UI')
+    parser = argparse.ArgumentParser(description='Alpha-Bot Web UI')
     parser.add_argument('--port', type=int, default=5000, help='Port to run the server on')
     parser.add_argument('--host', default='localhost', help='Host to bind to')
     parser.add_argument('--debug', action='store_true', help='Enable debug mode')

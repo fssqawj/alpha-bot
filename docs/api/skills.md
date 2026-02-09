@@ -1,16 +1,16 @@
 # Skills System API
 
-The skills system in Ask-Shell provides a flexible architecture for extending capabilities and automating various types of tasks.
+The skills system in Alpha-Bot provides a flexible architecture for extending capabilities and automating various types of tasks.
 
 ## Overview
 
-The skills system enables Ask-Shell to handle diverse tasks through specialized skill modules. Each skill is designed for specific types of operations, and the system intelligently selects the appropriate skill for each task step.
+The skills system enables Alpha-Bot to handle diverse tasks through specialized skill modules. Each skill is designed for specific types of operations, and the system intelligently selects the appropriate skill for each task step.
 
 ## Core Components
 
 ### Base Skill Class
 
-All skills inherit from the [BaseSkill](file:///Users/anweijie/Documents/ask-shell/ask_shell/skills/base_skill.py) class which provides the common interface for skill execution.
+All skills inherit from the [BaseSkill](file:///Users/anweijie/Documents/ask-shell/alpha_bot/skills/base_skill.py) class which provides the common interface for skill execution.
 
 #### Key Methods
 
@@ -24,16 +24,16 @@ Execute the skill for the given task.
 - `**kwargs`: Additional parameters
 
 **Returns:**
-- [SkillExecutionResponse](file:///Users/anweijie/Documents/ask-shell/ask_shell/models/types.py): The result of skill execution
+- [SkillExecutionResponse](file:///Users/anweijie/Documents/ask-shell/alpha_bot/models/types.py): The result of skill execution
 
 ### Skill Manager
 
-The [SkillManager](file:///Users/anweijie/Documents/ask-shell/ask_shell/skills/skill_manager.py) handles registration, selection, and execution of skills.
+The [SkillManager](file:///Users/anweijie/Documents/ask-shell/alpha_bot/skills/skill_manager.py) handles registration, selection, and execution of skills.
 
 #### Initialization
 
 ```python
-from ask_shell.skills.skill_manager import SkillManager
+from alpha_bot.skills.skill_manager import SkillManager
 
 # Create a skill manager with UI and persistence enabled
 skill_manager = SkillManager(ui=console_ui, enable_persistence=True)
@@ -58,7 +58,7 @@ Select the best skill for the given task using LLM-based intelligent selection.
 - `context` (Dict): Optional context for decision making
 
 **Returns:**
-- [SkillSelectResponse](file:///Users/anweijie/Documents/ask-shell/ask_shell/models/types.py): Contains selected skill and selection information
+- [SkillSelectResponse](file:///Users/anweijie/Documents/ask-shell/alpha_bot/models/types.py): Contains selected skill and selection information
 
 ##### `execute(task: str, context: Optional[Dict[str, Any]] = None) -> SkillResponse`
 
@@ -69,20 +69,20 @@ Execute a task using the appropriate skill.
 - `context` (Dict): Execution context
 
 **Returns:**
-- [SkillResponse](file:///Users/anweijie/Documents/ask-shell/ask_shell/models/types.py): The skill execution result
+- [SkillResponse](file:///Users/anweijie/Documents/ask-shell/alpha_bot/models/types.py): The skill execution result
 
 ## Auto-Generated Persistent Skills
 
-Ask-Shell features a dynamic skill generation system that allows skills to be automatically created from markdown descriptions and persistently stored.
+Alpha-Bot features a dynamic skill generation system that allows skills to be automatically created from markdown descriptions and persistently stored.
 
 ### Skill Generator
 
-The [SkillGenerator](file:///Users/anweijie/Documents/ask-shell/ask_shell/skills/skill_generator.py) creates skill classes from markdown descriptions.
+The [SkillGenerator](file:///Users/anweijie/Documents/ask-shell/alpha_bot/skills/skill_generator.py) creates skill classes from markdown descriptions.
 
 #### Usage
 
 ```python
-from ask_shell.skills.skill_generator import SkillGenerator
+from alpha_bot.skills.skill_generator import SkillGenerator
 
 # Create a generator with persistence enabled
 generator = SkillGenerator(enable_persistence=True)
@@ -106,7 +106,7 @@ skill_class = generator.parse_markdown_to_skill(markdown_text, "MyCustomSkill")
 
 ### Skill Persistence
 
-The [SkillPersistence](file:///Users/anweijie/Documents/ask-shell/ask_shell/skills/skill_persistence.py) module handles saving and loading generated skills as Python files.
+The [SkillPersistence](file:///Users/anweijie/Documents/ask-shell/alpha_bot/skills/skill_persistence.py) module handles saving and loading generated skills as Python files.
 
 #### Methods
 
@@ -139,15 +139,15 @@ Check if a skill file exists for the given skill name.
 
 ### Command Skill
 
-[CommandSkill](file:///Users/anweijie/Documents/ask-shell/ask_shell/skills/command_skill.py) handles traditional command generation and text processing.
+[CommandSkill](file:///Users/anweijie/Documents/ask-shell/alpha_bot/skills/command_skill.py) handles traditional command generation and text processing.
 
 ### Direct LLM Skill
 
-[DirectLLMSkill](file:///Users/anweijie/Documents/ask-shell/ask_shell/skills/direct_llm_skill.py) handles tasks like translation, summarization, and analysis without command execution.
+[DirectLLMSkill](file:///Users/anweijie/Documents/ask-shell/alpha_bot/skills/direct_llm_skill.py) handles tasks like translation, summarization, and analysis without command execution.
 
 ### Browser Skill
 
-[BrowserSkill](file:///Users/anweijie/Documents/ask-shell/ask_shell/skills/browser_skill.py) provides web automation using Playwright with anti-bot detection.
+[BrowserSkill](file:///Users/anweijie/Documents/ask-shell/alpha_bot/skills/browser_skill.py) provides web automation using Playwright with anti-bot detection.
 
 ### Special Features in Browser Skill
 
@@ -179,7 +179,7 @@ def _build_hints_info(self) -> str:
 To create a custom skill, extend the BaseSkill class:
 
 ```python
-from ask_shell.skills.base_skill import BaseSkill, SkillExecutionResponse
+from alpha_bot.skills.base_skill import BaseSkill, SkillExecutionResponse
 from typing import List, Optional, Dict, Any
 
 class MyCustomSkill(BaseSkill):

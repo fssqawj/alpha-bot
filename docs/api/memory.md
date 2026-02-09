@@ -1,6 +1,6 @@
 # Memory System API
 
-The memory system in Ask-Shell provides contextual awareness and learning capabilities that enhance task execution.
+The memory system in Alpha-Bot provides contextual awareness and learning capabilities that enhance task execution.
 
 ## Overview
 
@@ -10,12 +10,12 @@ The memory system maintains a contextual memory bank that stores execution histo
 
 ### MemoryBank Class
 
-The [MemoryBank](file:///Users/anweijie/Documents/ask-shell/ask_shell/memory/bank.py) is the central component of the memory system.
+The [MemoryBank](file:///Users/anweijie/Documents/ask-shell/alpha_bot/memory/bank.py) is the central component of the memory system.
 
 #### Initialization
 
 ```python
-from ask_shell.memory.bank import MemoryBank
+from alpha_bot.memory.bank import MemoryBank
 
 # Create a memory bank with default settings
 memory_bank = MemoryBank()
@@ -35,10 +35,10 @@ memory_bank = MemoryBank(max_entries=10, compression_threshold=5)
 Add a memory entry to the bank.
 
 **Parameters:**
-- `entry` ([MemoryEntry](file:///Users/anweijie/Documents/ask-shell/ask_shell/memory/types.py)): MemoryEntry to add
+- `entry` ([MemoryEntry](file:///Users/anweijie/Documents/ask-shell/alpha_bot/memory/types.py)): MemoryEntry to add
 
 ```python
-from ask_shell.memory.types import MemoryEntry
+from alpha_bot.memory.types import MemoryEntry
 
 entry = MemoryEntry(
     skill_name="CommandSkill",
@@ -55,13 +55,13 @@ memory_bank.add_entry(entry)
 Retrieve relevant memories based on query criteria.
 
 **Parameters:**
-- `query` ([MemoryQuery](file:///Users/anweijie/Documents/ask-shell/ask_shell/memory/types.py)): MemoryQuery specifying retrieval criteria
+- `query` ([MemoryQuery](file:///Users/anweijie/Documents/ask-shell/alpha_bot/memory/types.py)): MemoryQuery specifying retrieval criteria
 
 **Returns:**
 - List of relevant MemoryEntries
 
 ```python
-from ask_shell.memory.types import MemoryQuery
+from alpha_bot.memory.types import MemoryQuery
 
 query = MemoryQuery(
     keywords=["directory", "structure"],
@@ -108,7 +108,7 @@ Get statistics about the memory bank.
 
 ### Memory Types
 
-The memory system defines several data types in [types.py](file:///Users/anweijue/Documents/ask-shell/ask_shell/memory/types.py):
+The memory system defines several data types in [types.py](file:///Users/anweijie/Documents/ask-shell/alpha_bot/memory/types.py):
 
 #### MemoryEntry
 
@@ -197,8 +197,8 @@ Compression creates summaries of groups of related entries, preserving important
 ## Example Implementation
 
 ```python
-from ask_shell.memory.bank import MemoryBank
-from ask_shell.memory.types import MemoryEntry, MemoryQuery
+from alpha_bot.memory.bank import MemoryBank
+from alpha_bot.memory.types import MemoryEntry, MemoryQuery
 
 # Initialize memory bank
 memory_bank = MemoryBank(max_entries=10, compression_threshold=5)
@@ -226,4 +226,4 @@ for memory in relevant_memories:
     print(f"Previous action: {memory.command} -> {memory.result}")
 ```
 
-The memory system enables Ask-Shell to maintain context across multiple steps of complex tasks, resulting in more intelligent and coherent task execution.
+The memory system enables Alpha-Bot to maintain context across multiple steps of complex tasks, resulting in more intelligent and coherent task execution.

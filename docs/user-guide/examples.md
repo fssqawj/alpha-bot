@@ -1,20 +1,20 @@
 # Examples
 
-Real-world examples demonstrating Ask-Shell's capabilities.
+Real-world examples demonstrating Alpha-Bot's capabilities.
 
 ## Demo Videos
 
 ### Demo 1: Browser Control with Natural Language
 
-Watch Ask-Shell control the terminal and browser with natural language commands.
+Watch Alpha-Bot control the terminal and browser with natural language commands.
 
 ![browser-demo](https://github.com/user-attachments/assets/717ce22f-084a-4081-8ad0-ae23f7daf0ff)
 
 ### Demo 2: Terminal Task Automation
 
-See Ask-Shell handle complex multi-step terminal tasks automatically.
+See Alpha-Bot handle complex multi-step terminal tasks automatically.
 
-![ask-shell-demo](https://github.com/user-attachments/assets/8721876f-92db-4762-a03d-64d845546de0)
+![alpha-bot-demo](https://github.com/user-attachments/assets/8721876f-92db-4762-a03d-64d845546de0)
 
 ## Simple Examples
 
@@ -40,7 +40,7 @@ ask "show me the 10 largest files in this directory"
 
 ## Multi-Step Examples
 
-These examples showcase Ask-Shell's ability to handle complex workflows.
+These examples showcase Alpha-Bot's ability to handle complex workflows.
 
 ### Project Organization
 
@@ -232,7 +232,7 @@ Step 6: Push
 
 ## Skill-Based Capabilities
 
-Ask-Shell leverages a variety of skills to handle different types of tasks:
+Alpha-Bot leverages a variety of skills to handle different types of tasks:
 
 ### LLM Skill
 
@@ -392,22 +392,22 @@ Attempt 2:
 ```
 $ ask -i
 
-Ask-Shell > list all files in current directory
+Alpha-Bot > list all files in current directory
 [... shows file list ...]
 
-Ask-Shell > how many Python files are there
+Alpha-Bot > how many Python files are there
 💭 Context: Using file list from previous command
    Counting .py extensions
 
-Ask-Shell > show me the largest one
+Alpha-Bot > show me the largest one
 💭 Remembering: Found agent.py is largest (456 lines)
    $ cat agent.py
 
-Ask-Shell > summarize what it does
+Alpha-Bot > summarize what it does
 💭 Analyzing code from agent.py
    This is the main task automation agent...
 
-Ask-Shell > exit
+Alpha-Bot > exit
 ```
 
 ### Step-by-Step Task
@@ -437,7 +437,7 @@ Ask-Shell > done
 
 ## Comparison Examples
 
-### Shell-GPT vs Ask-Shell
+### Shell-GPT vs Alpha-Bot
 
 **Task**: "Organize project files"
 
@@ -453,7 +453,7 @@ Stops here. You need to:
 - Figure out how to move files
 - Verify the result
 
-**Ask-Shell output:**
+**Alpha-Bot output:**
 
 ```
 Step 1: Create directories
@@ -549,7 +549,7 @@ ask "initialize npm project, install React and common dependencies, create basic
 
 ### Trust the Process
 
-For complex tasks, let Ask-Shell work through multiple steps:
+For complex tasks, let Alpha-Bot work through multiple steps:
 
 ```bash
 ask "audit this codebase for potential issues, create a report, and suggest fixes"

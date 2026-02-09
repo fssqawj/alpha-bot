@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Ask-Shell 主程序入口"""
+"""Alpha-Bot 主程序入口"""
 
 import argparse
 import sys
 from dotenv import load_dotenv
 from loguru import logger
-from ask_shell import AskShell
+from alpha_bot import AlphaBot
 
 
 def main():
@@ -13,7 +13,7 @@ def main():
     load_dotenv()
     
     parser = argparse.ArgumentParser(
-        description="Ask-Shell - 用自然语言操控你的终端",
+        description="Alpha-Bot - 用自然语言操控你的终端",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 示例:
@@ -67,7 +67,7 @@ def main():
     # 启动Web服务器
     if args.web:
         try:
-            from ask_shell.web.server import run_web_server
+            from alpha_bot.web.server import run_web_server
             run_web_server(host='localhost', port=5000, debug=False)
         except ImportError as e:
             print(f"错误: 无法启动Web服务器 - {e}")
@@ -76,7 +76,7 @@ def main():
     else:
         # 创建 Agent
         try:
-            agent = AskShell(
+            agent = AlphaBot(
                 auto_execute=args.auto,
                 working_dir=args.workdir,
                 direct_mode=args.llm,

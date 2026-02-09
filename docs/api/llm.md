@@ -8,7 +8,7 @@ The LLM client provides an abstraction layer for different AI providers, current
 
 ## Module Structure
 
-Located in: [`ask_shell/llm/`](https://github.com/fssqawj/ask-shell/tree/main/ask_shell/llm)
+Located in: [`alpha_bot/llm/`](https://github.com/fssqawj/alpha-bot/tree/main/alpha_bot/llm)
 
 - `base.py` - Abstract base class
 - `openai_client.py` - OpenAI implementation
@@ -43,7 +43,7 @@ class LLMClient(ABC):
 ### Initialization
 
 ```python
-from ask_shell.llm import OpenAIClient
+from alpha_bot.llm import OpenAIClient
 
 client = OpenAIClient(
     api_key="your-api-key",
@@ -102,7 +102,7 @@ analysis = client.analyze_safety("rm -rf /tmp/*")
 For testing without API calls:
 
 ```python
-from ask_shell.llm import MockClient
+from alpha_bot.llm import MockClient
 
 client = MockClient()
 command = client.generate_command("list files", {})
@@ -124,7 +124,7 @@ MODEL_NAME=gpt-4  # Optional, defaults to gpt-4
 To add a new provider:
 
 ```python
-from ask_shell.llm.base import LLMClient
+from alpha_bot.llm.base import LLMClient
 
 class CustomProvider(LLMClient):
     def __init__(self, api_key: str):

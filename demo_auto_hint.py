@@ -5,10 +5,10 @@ import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from ask_shell.auto_hint.system import AutoHintSystem
-from ask_shell.auto_hint.types import HintPattern, HintCategory
-from ask_shell.models.types import ExecutionResult, SkillResponse
-from ask_shell.skills.base_skill import BaseSkill
+from alpha_bot.auto_hint.system import AutoHintSystem
+from alpha_bot.auto_hint.types import HintPattern, HintCategory
+from alpha_bot.models.types import ExecutionResult, SkillResponse
+from alpha_bot.skills.base_skill import BaseSkill
 
 
 def create_mock_execution_history():

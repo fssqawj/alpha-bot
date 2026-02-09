@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from ask_shell.memory.bank import MemoryBank
+from alpha_bot.memory.bank import MemoryBank
 from ..models.types import ExecutionResult
 
 

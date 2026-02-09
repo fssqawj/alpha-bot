@@ -8,14 +8,14 @@ The `ShellExecutor` class handles command execution, safety checks, and result p
 
 ## Location
 
-[`ask_shell/executor/shell.py`](https://github.com/fssqawj/ask-shell/blob/main/ask_shell/executor/shell.py)
+[`alpha_bot/executor/shell.py`](https://github.com/fssqawj/alpha-bot/blob/main/alpha_bot/executor/shell.py)
 
 ## Class: ShellExecutor
 
 ### Initialization
 
 ```python
-from ask_shell.executor import ShellExecutor
+from alpha_bot.executor import ShellExecutor
 
 executor = ShellExecutor(workdir="/path/to/dir")  # Optional workdir
 ```
@@ -113,7 +113,7 @@ Command Input
 ### Basic Execution
 
 ```python
-from ask_shell.executor import ShellExecutor
+from alpha_bot.executor import ShellExecutor
 
 executor = ShellExecutor()
 

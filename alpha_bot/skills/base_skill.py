@@ -1,18 +1,18 @@
-"""Base skill interface for Ask-Shell capabilities"""
+"""Base skill interface for Alpha-Bot capabilities"""
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Optional, List, Dict, Any
 from enum import Enum
 
-from ask_shell.models.types import SkillExecutionResponse
+from alpha_bot.models.types import SkillExecutionResponse
 # Import auto hint system in __init__ to avoid circular import
-from ask_shell.auto_hint import get_auto_hint_system
+from alpha_bot.auto_hint import get_auto_hint_system
 
 
 class BaseSkill(ABC):
     """
-    Base class for all Ask-Shell skills
+    Base class for all Alpha-Bot skills
     
     Each skill represents a capability the agent can use to accomplish tasks.
     Skills can generate commands, process content, create files, call APIs, etc.
@@ -95,7 +95,7 @@ class BaseSkill(ABC):
         try:
             # Lazy initialize auto hint system
             if self.auto_hint_system is None:
-                from ask_shell.auto_hint import get_auto_hint_system
+                from alpha_bot.auto_hint import get_auto_hint_system
                 self.auto_hint_system = get_auto_hint_system()
             
             # Get skill name for hint lookup

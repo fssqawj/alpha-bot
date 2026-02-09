@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Auto Hint System automatically extracts and generates helpful hints from execution history, enabling the system to learn from both successful and failed executions. This allows Ask-Shell to become more efficient and effective over time by avoiding unnecessary trial and error.
+The Auto Hint System automatically extracts and generates helpful hints from execution history, enabling the system to learn from both successful and failed executions. This allows Alpha-Bot to become more efficient and effective over time by avoiding unnecessary trial and error.
 
 ## System Architecture
 
@@ -85,19 +85,19 @@ The system provides CLI commands for management:
 
 ```bash
 # Show system status
-python -m ask_shell auto-hint status
+python -m alpha_bot auto-hint status
 
 # Show generated hints
-python -m ask_shell auto-hint show --skill BrowserSkill
+python -m alpha_bot auto-hint show --skill BrowserSkill
 
 # Configure system
-python -m ask_shell auto-hint configure --enable --min-history 5
+python -m alpha_bot auto-hint configure --enable --min-history 5
 
 # Clean up old hints
-python -m ask_shell auto-hint cleanup --max-age 60 --min-effectiveness 0.5
+python -m alpha_bot auto-hint cleanup --max-age 60 --min-effectiveness 0.5
 
 # Add manual hint
-python -m ask_shell auto-hint add-hint --skill BrowserSkill --title "Login Pattern" --content "Always check for login forms first" --category best_practice
+python -m alpha_bot auto-hint add-hint --skill BrowserSkill --title "Login Pattern" --content "Always check for login forms first" --category best_practice
 ```
 
 ## Directory Structure
@@ -105,7 +105,7 @@ python -m ask_shell auto-hint add-hint --skill BrowserSkill --title "Login Patte
 Generated hints are stored in organized directories:
 
 ```
-ask_shell/skills/hints_generated/
+alpha_bot/skills/hints_generated/
 ├── browser/          # Browser skill hints
 ├── command/          # Command skill hints
 ├── general/          # General hints
@@ -136,7 +136,7 @@ class MySkill(BaseSkill):
 Skills can also manually access hints:
 
 ```python
-from ask_shell.auto_hint import get_auto_hint_system
+from alpha_bot.auto_hint import get_auto_hint_system
 
 # Get hints for specific skill
 auto_hint_system = get_auto_hint_system()

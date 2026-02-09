@@ -1,4 +1,4 @@
-"""Ask-Shell 核心逻辑"""
+"""Alpha-Bot 核心逻辑"""
 
 from typing import Optional
 from loguru import logger
@@ -9,9 +9,9 @@ from .ui.console import ConsoleUI
 from .skills import SkillManager
 from .context.task_context import TaskContext
 
-class AskShell:
+class AlphaBot:
     """
-    Ask-Shell 主类
+    Alpha-Bot 主类
     
     用自然语言操控你的终端，使用AI技能系统完成各种任务。
     """

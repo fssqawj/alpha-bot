@@ -1,7 +1,7 @@
-# Ask-Shell
+# Alpha-Bot
 
 <p align="center">
-  <img src="ask-shell-logo.jpg" alt="Ask-Shell Logo" width="600"/>
+  <img src="alpha-bot-logo.jpg" alt="Alpha-Bot Logo" width="600"/>
   <br/>
   <sub>Logo 由 Google Gemini 生成</sub>
 </p>
@@ -18,25 +18,25 @@
   <em>多步骤执行 • 失败自动重试 • 实时思考展示</em>
 </p>
 
-[![PyPI version](https://img.shields.io/pypi/v/askshell-ai.svg)](https://pypi.org/project/askshell-ai/)
+[![PyPI version](https://img.shields.io/pypi/v/alphabot-ai.svg)](https://pypi.org/project/alphabot-ai/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
-[![Documentation](https://img.shields.io/badge/docs-mkdocs-blue)](https://fssqawj.github.io/ask-shell/)
+[![Documentation](https://img.shields.io/badge/docs-mkdocs-blue)](https://fssqawj.github.io/alpha-bot/)
 
 ---
 
 <p align="center">
-  📖 <strong><a href="https://fssqawj.github.io/ask-shell/">完整文档</a></strong> | 
-  <a href="https://fssqawj.github.io/ask-shell/getting-started/quick-start/">快速开始</a> | 
-  <a href="https://fssqawj.github.io/ask-shell/user-guide/examples/">使用示例</a> | 
-  <a href="https://fssqawj.github.io/ask-shell/api/agent/">API 参考</a>
+  📖 <strong><a href="https://fssqawj.github.io/alpha-bot/">完整文档</a></strong> |
+  <a href="https://fssqawj.github.io/alpha-bot/getting-started/quick-start/">快速开始</a> |
+  <a href="https://fssqawj.github.io/alpha-bot/user-guide/examples/">使用示例</a> |
+  <a href="https://fssqawj.github.io/alpha-bot/api/agent/">API 参考</a>
 </p>
 
 ---
 
 <div align="center">
 
-### 🌟 Ask-Shell 的独特之处
+### 🌟 Alpha-Bot 的独特之处
 
 **不只是命令生成器 - 真正的任务自动化代理！**
 
@@ -61,11 +61,11 @@
 
 中文 | [English](README.md)
 
-Ask-Shell 是一个 **AI 驱动的任务自动化代理**，它超越了简单的命令生成。与只能将查询转换为命令的工具不同，Ask-Shell 能够**执行多步骤任务**、**从失败中学习**，并**调整策略**直到完成。
+Alpha-Bot 是一个 **AI 驱动的任务自动化代理**，它超越了简单的命令生成。与只能将查询转换为命令的工具不同，Alpha-Bot 能够**执行多步骤任务**、**从失败中学习**，并**调整策略**直到完成。
 
-## 🎯 为什么选择 Ask-Shell？
+## 🎯 为什么选择 Alpha-Bot？
 
-| 其他工具 | Ask-Shell |
+| 其他工具 | Alpha-Bot |
 |---------|-----------|
 | 生成一条命令 → 完成 | 执行多个步骤 → 分析 → 调整 → 完成 |
 | "这是你的命令，自己运行吧" | "我会一直工作直到完成" |
@@ -75,7 +75,7 @@ Ask-Shell 是一个 **AI 驱动的任务自动化代理**，它超越了简单�
 ```
 其他工具：ls -la  # 只有一条命令，剩下的你自己做
 
-Ask-Shell：步骤 1：分析目录结构
+Alpha-Bot：步骤 1：分析目录结构
           步骤 2：创建整理好的文件夹
           步骤 3：将文件移动到合适的位置
           步骤 4：验证整理结果
@@ -87,22 +87,22 @@ Ask-Shell：步骤 1：分析目录结构
 <!-- 
 请在 GitHub 编辑此 README 时，将视频拖拽到下方区域：
 1. 点击 GitHub 上的编辑按钮
-2. 将 ask-shell-demo.mp4 拖拽到编辑器中
+2. 将 alpha-bot-demo.mp4 拖拽到编辑器中
 3. GitHub 会自动上传并生成链接
 -->
 
 ![browser-demo](https://github.com/user-attachments/assets/717ce22f-084a-4081-8ad0-ae23f7daf0ff)
 
 
-<p align="center"><em>演示1：使用 ask-shell 通过自然语言操控终端</em></p>
+<p align="center"><em>演示1：使用 alpha-bot 通过自然语言操控终端</em></p>
 
 
-![ask-shell-demo](https://github.com/user-attachments/assets/8721876f-92dc-4762-a03d-64d845546de0)
+![alpha-bot-demo](https://github.com/user-attachments/assets/8721876f-92dc-4762-a03d-64d845546de0)
 
 
-<p align="center"><em>演示2：使用 ask-shell 通过自然语言操控终端</em></p>
+<p align="center"><em>演示2：使用 alpha-bot 通过自然语言操控终端</em></p>
 
-Ask-Shell 提供了美观的终端界面和实时反馈：
+Alpha-Bot 提供了美观的终端界面和实时反馈：
 
 - 💭 **思考过程实时显示** - 看到 AI 的思考过程
 - ⚙️ **命令执行动画** - 执行命令时显示动态加载效果
@@ -117,17 +117,17 @@ Ask-Shell 提供了美观的终端界面和实时反馈：
 #### 方式一：从 PyPI 安装
 
 ```bash
-pip install askshell-ai
+pip install alphabot-ai
 ```
 
 #### 方式二：开发模式安装
 
 ```bash
 # 克隆仓库
-git clone https://github.com/fssqawj/ask-shell.git
-cd ask-shell
+git clone https://github.com/fssqawj/alpha-bot.git
+cd alpha-bot
 
-# 以开发模式安装（可以直接使用 ask-shell 或 ask 命令）
+# 以开发模式安装（可以直接使用 alpha-bot 或 ask 命令）
 pip install -e .
 ```
 
@@ -153,11 +153,11 @@ OPENAI_API_KEY=your-api-key-here
 
 ### 安装后使用（推荐）
 
-如果你使用 `pip install askshell-ai` 或 `pip install -e .` 安装，可以直接使用命令：
+如果你使用 `pip install alphabot-ai` 或 `pip install -e .` 安装，可以直接使用命令：
 
 ```bash
-# 使用 ask-shell 命令
-ask-shell "列出当前目录下的所有 Python 文件"
+# 使用 alpha-bot 命令
+alpha-bot "列出当前目录下的所有 Python 文件"
 
 # 或者使用更短的 ask 命令
 ask "列出当前目录下的所有 Python 文件"
@@ -179,24 +179,24 @@ ask -w /path/to/dir "你的任务"
 
 ```bash
 # 单次执行任务
-python ask_shell/cli.py "列出当前目录下的所有 Python 文件"
+python alpha_bot/cli.py "列出当前目录下的所有 Python 文件"
 
 # 交互模式
-python ask_shell/cli.py -i
+python alpha_bot/cli.py -i
 
 # 演示模式（无需 API Key）
-python ask_shell/cli.py -d "创建一个测试文件夹"
+python alpha_bot/cli.py -d "创建一个测试文件夹"
 
 # 自动执行模式（不需要确认每条命令）
-python ask_shell/cli.py -a "统计当前目录代码行数"
+python alpha_bot/cli.py -a "统计当前目录代码行数"
 
 # 指定工作目录
-python ask_shell/cli.py -w /path/to/dir "你的任务"
+python alpha_bot/cli.py -w /path/to/dir "你的任务"
 ```
 
 ### 示例
 
-以下示例同时适用于 `ask` 命令和 `python ask_shell/cli.py`：
+以下示例同时适用于 `ask` 命令和 `python alpha_bot/cli.py`：
 
 #### **简单任务**（像其他工具一样）
 ```bash
@@ -205,7 +205,7 @@ ask "找出所有大于 1MB 的文件"
 ask "列出所有正在运行的 Python 进程"
 ```
 
-#### **复杂多步骤任务**（Ask-Shell 的优势所在！）
+#### **复杂多步骤任务**（Alpha-Bot 的优势所在！）
 ```bash
 # 项目整理 - 自动执行多个步骤
 ask "整理这个项目：创建 docs、tests 和 src 文件夹，然后相应地移动文件"
@@ -251,21 +251,21 @@ ask "创建当前目录的带时间戳的备份"
 ```bash
 ask -i
 # 或
-python ask_shell/cli.py -i
+python alpha_bot/cli.py -i
 ```
 
 进入交互模式后，可以持续输入任务：
 ```
-Ask-Shell > 列出当前目录下的文件
-Ask-Shell > 创建一个测试文件
-Ask-Shell > exit  # 退出
+Alpha-Bot > 列出当前目录下的文件
+Alpha-Bot > 创建一个测试文件
+Alpha-Bot > exit  # 退出
 ```
 
 ## 📁 项目结构
 
 ```
-ask-shell/
-├── ask_shell/           # 核心代码
+alpha-bot/
+├── alpha_bot/           # 核心代码
 │   ├── agent.py        # 带智能循环的任务自动化代理
 │   ├── cli.py          # 命令行入口
 │   ├── executor/       # 带安全检查的命令执行器
@@ -278,7 +278,7 @@ ask-shell/
 
 ## 🆚 与其他工具对比
 
-| 功能 | Shell-GPT | Aichat | Warp AI | **Ask-Shell** |
+| 功能 | Shell-GPT | Aichat | Warp AI | **Alpha-Bot** |
 |------|-----------|--------|---------|---------------|
 | **多步骤任务执行** | ❌ | ❌ | ⚠️ 有限 | ✅ **完全支持** |
 | **失败自动重试** | ❌ | ❌ | ❌ | ✅ **是** |
@@ -292,12 +292,12 @@ ask-shell/
 | **开源** | ✅ Python | ✅ Rust | ❌ 闭源 | ✅ **Python** |
 | **易于扩展** | ⚠️ | ⚠️ | ❌ | ✅ **插件就绪** |
 
-### Ask-Shell 的不同之处
+### Alpha-Bot 的不同之处
 
 **Shell-GPT / sgpt**：快速命令翻译很好，但生成一条命令后就停止了。  
 **Aichat**：功能丰富的聊天界面，但不是面向任务的。  
 **Warp Terminal**：现代化的终端与 AI 功能，但闭源且需要完全替换终端。  
-**Ask-Shell**：✨ **专注于自主任务完成** - 持续执行直到任务真正完成。
+**Alpha-Bot**：✨ **专注于自主任务完成** - 持续执行直到任务真正完成。
 
 ### 🚀 革命性自动提示系统（全新功能！）
 

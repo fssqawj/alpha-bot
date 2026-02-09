@@ -8,7 +8,7 @@ Ask-Shell uses the [Rich](https://github.com/Textualize/rich) library to create 
 
 ## Location
 
-[`ask_shell/ui/console.py`](https://github.com/fssqawj/ask-shell/blob/main/ask_shell/ui/console.py)
+[`alpha_bot/ui/console.py`](https://github.com/fssqawj/alpha-bot/blob/main/alpha_bot/ui/console.py)
 
 ## Components
 
@@ -17,7 +17,7 @@ Ask-Shell uses the [Rich](https://github.com/Textualize/rich) library to create 
 The main console interface for user interaction.
 
 ```python
-from ask_shell.ui import Console
+from alpha_bot.ui import Console
 
 console = Console()
 ```
@@ -121,7 +121,7 @@ with Progress() as progress:
 ### Complete Interaction Flow
 
 ```python
-from ask_shell.ui import Console
+from alpha_bot.ui import Console
 
 console = Console()
 

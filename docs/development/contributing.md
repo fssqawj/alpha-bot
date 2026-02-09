@@ -66,11 +66,11 @@ Ready to code? Great! Follow the development workflow below.
 ```bash
 # Fork the repository on GitHub
 # Then clone your fork
-git clone https://github.com/YOUR-USERNAME/ask-shell.git
-cd ask-shell
+git clone https://github.com/YOUR-USERNAME/alpha-bot.git
+cd alpha-bot
 
 # Add upstream remote
-git remote add upstream https://github.com/fssqawj/ask-shell.git
+git remote add upstream https://github.com/fssqawj/alpha-bot.git
 ```
 
 ### 2. Create a Branch
@@ -344,7 +344,7 @@ tests/
 
 ```python
 import pytest
-from ask_shell.agent import TaskAgent
+from alpha_bot.agent import TaskAgent
 
 class TestAgent:
     def setup_method(self):

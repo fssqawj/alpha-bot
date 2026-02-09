@@ -37,9 +37,9 @@ class BrowserSkill(BaseSkill):
     _browser_page = None        # Current page
     _session_active = False     # Whether session is active
     _browser_process = None     # Browser subprocess
-    _ws_endpoint_file = '/tmp/ask_shell_browser_ws.txt'  # WebSocket endpoint for reconnection
-    _state_file = '/tmp/ask_shell_browser_state/state.json'  # Shared state file for cross-process coordination
-    _lock_file = '/tmp/ask_shell_browser_state/lock'  # Lock file for cross-process synchronization
+    _ws_endpoint_file = '/tmp/alpha_bot_browser_ws.txt'  # WebSocket endpoint for reconnection
+    _state_file = '/tmp/alpha_bot_browser_state/state.json'  # Shared state file for cross-process coordination
+    _lock_file = '/tmp/alpha_bot_browser_state/lock'  # Lock file for cross-process synchronization
     
     # Operation history to track all browser operations
     _operation_history = []     # List of all operations performed
@@ -89,7 +89,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # 导入浏览器技能类
-from ask_shell.skills.browser_skill import BrowserSkill
+from alpha_bot.skills.browser_skill import BrowserSkill
 import time
 import random
 
@@ -246,13 +246,13 @@ except Exception as e:
         """设置浏览器上下文和页面"""
         # 获取或创建context
         # 为了确保页面状态持久化，我们总是使用相同标识的context
-        # 查找已有的ask-shell专用context，如果没有则创建
+        # 查找已有的alpha-bot专用context，如果没有则创建
         context = None
         for ctx in browser.contexts:
             # 尝试通过特定属性识别我们的context
             try:
                 # 通过检查特定标识来识别我们的context
-                if hasattr(ctx, '_ask_shell_context') or len(browser.contexts) == 1:
+                if hasattr(ctx, '_alpha_bot_context') or len(browser.contexts) == 1:
                     context = ctx
                     break
             except:
@@ -269,8 +269,8 @@ except Exception as e:
                     viewport={'width': 1920, 'height': 1080},
                     user_agent='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36'
                 )
-                # 标记这是ask-shell专用的context
-                context._ask_shell_context = True
+                # 标记这是alpha-bot专用的context
+                context._alpha_bot_context = True
                 # 添加反检测脚本
                 init_script = '''
                     Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
@@ -536,7 +536,7 @@ except Exception as e:
             return page
         
         # 启动独立的Chrome进程（只有在没有检测到现有实例时）
-        user_data_dir = '/tmp/ask_shell_chrome_profile'
+        user_data_dir = '/tmp/alpha_bot_chrome_profile'
         os.makedirs(user_data_dir, exist_ok=True)
         
         cls._browser_process = subprocess.Popen([
@@ -764,7 +764,7 @@ except Exception as e:
                     pass  # 忽略删除状态文件失败
 
             # 清理用户数据目录（可选）
-            user_data_dir = '/tmp/ask_shell_chrome_profile'
+            user_data_dir = '/tmp/alpha_bot_chrome_profile'
             if os.path.exists(user_data_dir):
                 try:
                     shutil.rmtree(user_data_dir, ignore_errors=True)

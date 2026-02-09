@@ -1,6 +1,6 @@
 # Basic Usage
 
-Learn the fundamentals of using Ask-Shell for everyday tasks.
+Learn the fundamentals of using Alpha-Bot for everyday tasks.
 
 ## Command Structure
 
@@ -45,7 +45,7 @@ ask "check system uptime and load average"
 
 ## Multi-Step Tasks
 
-This is where Ask-Shell excels - handling complex workflows automatically.
+This is where Alpha-Bot excels - handling complex workflows automatically.
 
 ### File Organization
 
@@ -83,7 +83,7 @@ ask "stage all changes, commit with a descriptive message, and push to origin"
 
 ### Thinking Process
 
-When you give Ask-Shell a task, you'll see:
+When you give Alpha-Bot a task, you'll see:
 
 ```
 💭 Analyzing task...
@@ -118,8 +118,8 @@ After running, you'll see structured output:
 ✅ Command executed successfully
 
 📊 Results:
-./ask_shell/cli.py
-./ask_shell/agent.py
+./alpha_bot/cli.py
+./alpha_bot/agent.py
 ./setup.py
 
 💭 Next step: Task completed
@@ -142,16 +142,16 @@ ask -i
 ### Example Session
 
 ```
-Ask-Shell > list all log files
+Alpha-Bot > list all log files
 [... shows log files ...]
 
-Ask-Shell > count the lines in each of them
+Alpha-Bot > count the lines in each of them
 [... analyzes the files from previous command ...]
 
-Ask-Shell > archive the ones older than 7 days
+Alpha-Bot > archive the ones older than 7 days
 [... uses context from both previous commands ...]
 
-Ask-Shell > exit
+Alpha-Bot > exit
 ```
 
 ## Working with Different Directories
@@ -167,10 +167,10 @@ ask -w /var/log "find error messages in syslog"
 In interactive mode:
 
 ```
-Ask-Shell > cd /var/log
-Ask-Shell > analyze error logs
-Ask-Shell > cd /home/user
-Ask-Shell > backup configuration files
+Alpha-Bot > cd /var/log
+Alpha-Bot > analyze error logs
+Alpha-Bot > cd /home/user
+Alpha-Bot > backup configuration files
 ```
 
 ## Best Practices

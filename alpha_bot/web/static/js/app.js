@@ -1,7 +1,7 @@
 // Ask-Shell Web UI Client-Side JavaScript
 // Main application logic and Socket.IO event handlers
 
-class AskShellWebUI {
+class AlphaBotWebUI {
     constructor() {
         this.socket = io();
         this.sessionId = Date.now().toString();
@@ -684,5 +684,5 @@ class AskShellWebUI {
 
 // Initialize the application when the DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    window.askShellApp = new AskShellWebUI();
+    window.alphaBotApp = new AlphaBotWebUI();
 });

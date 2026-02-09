@@ -89,7 +89,7 @@ Future plans and features for Ask-Shell.
 
 ## Community Requests
 
-Vote on features at [GitHub Discussions](https://github.com/fssqawj/ask-shell/discussions)
+Vote on features at [GitHub Discussions](https://github.com/fssqawj/alpha-bot/discussions)
 
 Current top requests:
 
@@ -105,4 +105,4 @@ Want to help implement these features? See our [Contributing Guide](contributing
 
 ## Feedback
 
-Have ideas for the roadmap? [Open an issue](https://github.com/fssqawj/ask-shell/issues) or start a [discussion](https://github.com/fssqawj/ask-shell/discussions)!
+Have ideas for the roadmap? [Open an issue](https://github.com/fssqawj/alpha-bot/issues) or start a [discussion](https://github.com/fssqawj/alpha-bot/discussions)!

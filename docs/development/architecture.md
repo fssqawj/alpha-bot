@@ -13,7 +13,7 @@ graph TB
     end
     
     subgraph "Agent Layer"
-        AGENT[AskShell Agent]
+        AGENT[AlphaBot Agent]
     end
     
     subgraph "Skills System"
@@ -136,7 +136,7 @@ The architecture consists of several key components:
 
 ```python
 def main():
-    """Entry point for ask-shell command"""
+    """Entry point for alpha-bot command"""
     
 def parse_arguments():
     """Parse CLI arguments"""
@@ -469,8 +469,8 @@ class TaskHistory:
 ## Code Organization
 
 ```
-ask-shell/
-├── ask_shell/
+alpha-bot/
+├── alpha_bot/
 │   ├── __init__.py          # Package init
 │   ├── cli.py               # CLI entry point
 │   ├── agent.py             # Task agent

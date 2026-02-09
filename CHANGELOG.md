@@ -27,7 +27,7 @@ All notable changes to this project will be documented in this file.
 ## [0.2.0] - 2025-12-xx
 
 ### Added
-- Initial release with core ask-shell functionality
+- Initial release with core Alpha-Bot functionality
 - Natural language to shell command translation
 - Interactive mode support
 - Safety checks for dangerous operations

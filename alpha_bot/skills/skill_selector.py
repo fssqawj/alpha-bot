@@ -5,7 +5,7 @@ from typing import List, Optional, Dict, Any
 
 from loguru import logger
 
-from ask_shell.llm.openai_client import OpenAIClient
+from alpha_bot.llm.openai_client import OpenAIClient
 from .base_skill import BaseSkill
 from ..models.types import ExecutionResult
 from .utils import build_full_history_message

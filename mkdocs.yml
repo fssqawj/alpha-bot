@@ -1,9 +1,9 @@
-site_name: Ask-Shell Documentation
-site_url: https://fssqawj.github.io/ask-shell/
+site_name: Alpha-Bot Documentation
+site_url: https://fssqawj.github.io/alpha-bot/
 site_description: AI-powered task automation agent for terminal
 site_author: fssqawj
-repo_url: https://github.com/fssqawj/ask-shell
-repo_name: fssqawj/ask-shell
+repo_url: https://github.com/fssqawj/alpha-bot
+repo_name: fssqawj/alpha-bot
 
 theme:
   name: material
@@ -84,9 +84,9 @@ nav:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/fssqawj/ask-shell
+      link: https://github.com/fssqawj/alpha-bot
     - icon: fontawesome/brands/python
-      link: https://pypi.org/project/askshell-ai/
+      link: https://pypi.org/project/alphabot-ai/
   analytics:
     provider: google
     property: !ENV GOOGLE_ANALYTICS_KEY
