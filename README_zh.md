@@ -1,9 +1,9 @@
 # Alpha-Bot
 
 <p align="center">
-  <img src="alpha-bot-logo.jpg" alt="Alpha-Bot Logo" width="600"/>
+  <img src="alpha-bot-png.jpg" alt="Alpha-Bot Logo" width="600"/>
   <br/>
-  <sub>Logo 由 Google Gemini 生成</sub>
+  <sub>Logo 由 Grok 生成</sub>
 </p>
 
 <p align="center">
